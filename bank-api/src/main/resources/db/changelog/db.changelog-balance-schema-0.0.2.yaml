@@ -1,0 +1,46 @@
+
+databaseChangeLog:
+  - changeSet:
+      id: create-balance-sequence
+      author: bank team
+      changes:
+        - sql:
+            sql: CREATE SEQUENCE balance_sequence START WITH 4;
+  - changeSet:
+      id: schema-0.0.2
+      author: bank team
+      changes:
+        - createTable:
+            tableName: balances
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  #                  autoIncrement: true
+                  defaultValueComputed: "NEXT VALUE FOR balance_sequence"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: bigint
+              - column:
+                  name: last_transaction
+                  type: varchar(500)
+              - column:
+                  name: date
+                  type: DATETIME
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: balances
+            columnNames: id
+            constraintName: balances_pk
+#  - changeSet:
+#      id: alter-accounts-auto-increment
+#      author: bank team
+#      changes:
+#        - sql:
+#            sql: ALTER TABLE accounts ALTER COLUMN id RESTART WITH 3;

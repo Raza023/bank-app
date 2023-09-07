@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-accounts-sequence
+      author: bank team
+      changes:
+        - sql:
+            sql: CREATE SEQUENCE accounts_sequence START WITH 4;
+  - changeSet:
+      id: schema-0.0.1
+      author: bank team
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  #                  autoIncrement: true
+                  defaultValueComputed: "NEXT VALUE FOR accounts_sequence"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(500)
+              - column:
+                  name: password
+                  type: varchar(500)
+              - column:
+                  name: roles
+                  type: varchar(255)
+              - column:
+                  name: email
+                  type: varchar(200)
+              - column:
+                  name: address
+                  type: varchar(500)
+        - addPrimaryKey:
+            tableName: accounts
+            columnNames: id
+            constraintName: accounts_pk
+        - createIndex:
+            tableName: accounts
+            indexName: accounts_idx_name
+            columns:
+              - column:
+                  name: name
+        - createIndex:
+            tableName: accounts
+            indexName: accounts_idx_email
+            columns:
+              - column:
+                  name: email
+#  - changeSet:
+#      id: alter-accounts-auto-increment
+#      author: bank team
+#      changes:
+#        - sql:
+#            sql: ALTER TABLE accounts ALTER COLUMN id RESTART WITH 3;

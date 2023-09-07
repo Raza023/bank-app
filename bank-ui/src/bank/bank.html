@@ -1,0 +1,203 @@
+
+<style>
+    .jumbotron{
+        color: black;
+        text-align: center !important;
+        background-image: url("images/bg.jpg");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+    }
+    .put{
+        padding-left: 410px;
+    }
+    @media (max-width: 1310px) {
+        .put{
+            padding-left: 350px;
+        }
+    }
+    @media (max-width: 1115px) {
+        .put{
+            padding-left: 300px;
+        }
+    }
+    @media (max-width: 1018px) {
+        .put{
+            padding-left: 250px;
+        }
+    }
+    @media (max-width: 991px) {
+        .put{
+            padding-left: 0px;
+        }
+    }
+
+    #appstore{
+        width: 200px;
+    }
+
+    #footer{
+        margin-top: 50px;
+        text-align: center;
+        background-color: aqua;
+        padding-top: 170px;
+        padding-bottom: 170px;
+    }
+    #home{
+        margin-top: 58px;
+        padding-top: 150px;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-bottom: 150px;
+    }
+    .active{
+        border-radius: 10px;
+        border: 1px solid gold;
+        background-color: aqua;
+    }
+    @media (max-width: 991px) {
+        .active{
+            border: 1px solid gold;
+            background-color: aqua;
+            padding-left: 3px;
+            padding-right: 3px;
+            width: max-content;
+        }
+    }
+    ul {
+            list-style: none;
+        }
+</style>
+
+
+<div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+    <nav id="navbar-example2" class="navbar navbar-expand-lg bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#!/account">
+                <img src="images/logo.png" alt="Quest Bank Logo" width="100" height="50"> <!-- Replace "your-logo-image-url" with the actual image URL and adjust width and height as needed -->
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#!/search">Search Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!/bank">Create/Update Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+    <div id="home" class="jumbotron">
+        <h1 class="display-3"><b>Create or Edit Bank Accounts</b></h1>
+        <h2 class="lead"><b>Enter Account Information</b></h2>
+        <hr class="m-y-2">
+
+        <b>At Quest Bank, we are more than just a financial institution; we are your trusted partner on your journey to financial success. With a rich history of serving our community, we have built a strong foundation of trust and excellence. Our commitment to you goes beyond banking; it's about understanding your unique financial aspirations and helping you achieve them.</b>
+
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <div class="container">
+        <div class="alert alert-success" ng-if="$ctrl.pass">
+            <strong>{{ $ctrl.passmessage }}</strong>
+        </div>
+
+        <div class="alert alert-danger" ng-if="$ctrl.fail">
+            <strong>{{ $ctrl.failmessage }}</strong>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <form ng-submit="$ctrl.save()">
+            <div class="row mb-3">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <h4>Enter account details</h4>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Id</label>
+                <div class="col-sm-4">
+                    <input readonly class="form-control" type="text" id="id" placeholder="Id" ng-model="$ctrl.bankItem.id" required autofocus >
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">name</label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" id="name" ng-model="$ctrl.bankItem.name" required >
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="password" id="password" ng-model="$ctrl.bankItem.password" required >
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Roles</label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" id="roles" ng-model="$ctrl.bankItem.roles" required >
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="email" id="email" placeholder="email" ng-model="$ctrl.bankItem.email" required >
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Address</label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" id="address" placeholder="address" ng-model="$ctrl.bankItem.address" required >
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <button class="btn btn-outline-primary" type="submit">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="container-fluid" id="footer">
+        <div class="row">
+            <h2>Download the app!</h2>
+            <h4>Really, why should I download this app??</h4>
+            <p><a href="#home"><img id="appstore" src="images/appstore.png" alt="image not found"></a></p>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!--<p>Name:  {{ SharedDataService.getSharedData().item.id }}</p>-->
+<!--<p>Item ID: {{ itemId }}</p>-->
+<!--<p>Item Data: {{ $location.search().data | json }}</p>-->
+<!--<p>Data: {{ $location.search().data.name }}</p>-->

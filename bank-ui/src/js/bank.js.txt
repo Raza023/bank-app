@@ -1,0 +1,50 @@
+(function () {
+    'use strict';
+
+    //Application register and define what are the dependencies you wanna use.
+    angular.module("bank-fe", ['ngResource', 'ng']);
+
+    //$resource is dependency injection against server side resource.
+    //:id is optional and will handle one record get request, update, delete
+    //check this out: https://docs.angularjs.org/api/ngResource/service/$resource  for the examples of get, save(post), put, delete requests
+    //Service define
+    function AccountService($resource) {
+        return $resource('../api/v1/bankAccount/:id');
+    }
+
+    //Service register
+    angular.module('bank-fe').factory('accountService', ['$resource', AccountService]);
+
+    //Account Controller (It will bing this view to backend resources.)
+    //equivalent to class
+    function AccountController(accountService) {
+        var self = this;
+
+        self.service = NewsService;
+        self.accounts = [];
+        self.title = '';
+        self.display = false;            //for performance improvement.
+
+        self.init = function () {
+            self.search();
+        }
+
+        self.search = function () {
+            self.display = false;
+            var parameters = {};
+            if (self.title) {
+                parameters.search = self.title;
+            }
+            self.service.get(parameters).$promise.then(function (response) {
+                self.display = true;
+                self.news = response.content;
+            });
+        }
+
+        self.init();
+    }
+
+    //Controller register  (pass dependency of service.)
+    angular.module("news-fe").controller('accountController', ['accountService', AccountController]);
+
+}());

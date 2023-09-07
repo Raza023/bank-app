@@ -1,0 +1,57 @@
+# it is used to log the sql on console.
+logging:
+  #  pattern:
+  #    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}] ${HOSTNAME}"
+  #    console:
+  file:
+    name: target/news.log
+  level:
+    sql: debug
+    web: debug
+    '[com.redmath.project]': DEBUG
+
+spring:
+  sql:
+    like:
+      operator: '%'
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: ${news.db.url}
+    user: ${news.db.user}
+    password: ${news.db.password}
+#    url: ${NEWS_DB_URL}
+#    user: ${NEWS_DB_USER}
+#    password: ${NEWS_DB_PASSWORD}
+#  security:
+#    user:
+#      name: admin
+#      password: admin
+#      roles: ADMIN
+  cache:
+    type: caffeine
+  liquibase:
+    contexts: ${news.liquibase.contexts:}
+
+generator:
+  strategy: sequence
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+#      show-details: when-authorized
+
+server:
+  port: 9080
+
+spring.profiles.include: dev,local

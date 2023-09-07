@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: data-0.0.2
+      author: bank team
+      changes:
+        - insert:
+            tableName: balances
+            columns:
+              - column:
+                  name: id
+                  value: '1'
+              - column:
+                  name: amount
+                  value: '73000'
+              - column:
+                  name: last_transaction
+                  value: debit
+              - column:
+                  name: date
+                  value: '2000-01-01T12:00:00'
+              - column:
+                  name: user_id
+                  value: '1'
+        - insert:
+            tableName: balances
+            columns:
+              - column:
+                  name: id
+                  value: '2'
+              - column:
+                  name: amount
+                  value: '85000'
+              - column:
+                  name: last_transaction
+                  value: credit
+              - column:
+                  name: date
+                  value: '2000-01-01T12:00:00'
+              - column:
+                  name: user_id
+                  value: '2'
+        - insert:
+            tableName: balances
+            columns:
+              - column:
+                  name: id
+                  value: '3'
+              - column:
+                  name: amount
+                  value: '45000'
+              - column:
+                  name: last_transaction
+                  value: debit
+              - column:
+                  name: date
+                  value: '2000-01-01T12:00:00'
+              - column:
+                  name: user_id
+                  value: '3'

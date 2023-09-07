@@ -1,0 +1,116 @@
+<style>
+    .jumbotron{
+        color: black;
+        text-align: center !important;
+        background-image: url("images/bg.jpg");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+    }
+    .put{
+        padding-left: 410px;
+    }
+    @media (max-width: 1310px) {
+        .put{
+            padding-left: 350px;
+        }
+    }
+    @media (max-width: 1115px) {
+        .put{
+            padding-left: 300px;
+        }
+    }
+    @media (max-width: 1018px) {
+        .put{
+            padding-left: 250px;
+        }
+    }
+    @media (max-width: 991px) {
+        .put{
+            padding-left: 0px;
+        }
+    }
+
+    #appstore{
+        width: 200px;
+    }
+
+    #footer{
+        margin-top: 50px;
+        text-align: center;
+        background-color: aqua;
+        padding-top: 170px;
+        padding-bottom: 170px;
+    }
+    #home{
+        padding-top: 150px;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-bottom: 150px;
+    }
+    .active{
+        border-radius: 10px;
+        border: 1px solid gold;
+        background-color: aqua;
+    }
+    @media (max-width: 991px) {
+        .active{
+            border: 1px solid gold;
+            background-color: aqua;
+            padding-left: 3px;
+            padding-right: 3px;
+            width: max-content;
+        }
+    }
+    ul {
+            list-style: none;
+        }
+</style>
+
+<div id="home" class="jumbotron">
+    <h1 class="display-3">Logout to Quest Bank</h1>
+    <p class="lead">We're here to serve your financial needs with dedication and expertise. we're committed to helping you achieve your financial goals. Discover a world of innovative banking solutions tailored just for you.</p>
+    <hr class="m-y-2">
+
+    <b>Your financial security is our top priority. Rest easy with Quest Bank.
+
+        We offer personalized services that cater to your unique needs.
+
+        We're proud to be a part of the community, working together for a brighter financial future.</b>
+</div>
+
+<br/>
+<br/>
+<br/>
+
+<div class="container">
+    <div class="alert alert-success" ng-if="$ctrl.pass">
+        <strong>{{ $ctrl.passmessage }}</strong>
+    </div>
+
+    <div class="alert alert-danger" ng-if="$ctrl.fail">
+        <strong>{{ $ctrl.failmessage }}</strong>
+    </div>
+</div>
+
+<div style="text-align: center;">
+    <div style="display: inline-block; vertical-align: middle;">
+        <div class="container" >
+            <form>
+                <div class="row mb-3">
+                    <div class="col-sm-8">
+                        <h4>Logout from Quest Bank</h4>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <button class="btn btn-outline-primary" type="button" ng-click="$ctrl.logout()">Logout</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

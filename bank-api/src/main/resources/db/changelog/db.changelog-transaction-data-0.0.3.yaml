@@ -1,0 +1,48 @@
+#//id, description, amount, transactionType, date, userId
+databaseChangeLog:
+  - changeSet:
+      id: data-0.0.3
+      author: bank team
+      changes:
+        - insert:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  value: '1'
+              - column:
+                  name: amount
+                  value: '3000'
+              - column:
+                  name: description
+                  value: sending to friend
+              - column:
+                  name: transaction_type
+                  value: debit
+              - column:
+                  name: date
+                  value: '2000-01-01T12:00:00'
+              - column:
+                  name: user_id
+                  value: '3'
+        - insert:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  value: '2'
+              - column:
+                  name: amount
+                  value: '3000'
+              - column:
+                  name: description
+                  value: receiving from family
+              - column:
+                  name: transaction_type
+                  value: credit
+              - column:
+                  name: date
+                  value: '2000-01-01T12:00:00'
+              - column:
+                  name: user_id
+                  value: '3'

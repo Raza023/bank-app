@@ -1,0 +1,165 @@
+
+<style>
+    .jumbotron{
+        color: black;
+        text-align: center !important;
+        background-image: url("images/bg.jpg");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+    }
+    .put{
+        padding-left: 410px;
+    }
+    @media (max-width: 1310px) {
+        .put{
+            padding-left: 350px;
+        }
+    }
+    @media (max-width: 1115px) {
+        .put{
+            padding-left: 300px;
+        }
+    }
+    @media (max-width: 1018px) {
+        .put{
+            padding-left: 250px;
+        }
+    }
+    @media (max-width: 991px) {
+        .put{
+            padding-left: 0px;
+        }
+    }
+
+    #appstore{
+        width: 200px;
+    }
+
+    #footer{
+        margin-top: 50px;
+        text-align: center;
+        background-color: aqua;
+        padding-top: 170px;
+        padding-bottom: 170px;
+    }
+    #home{
+        margin-top: 58px;
+        padding-top: 150px;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-bottom: 150px;
+    }
+    .active{
+        border-radius: 10px;
+        border: 1px solid gold;
+        background-color: aqua;
+    }
+    @media (max-width: 991px) {
+        .active{
+            border: 1px solid gold;
+            background-color: aqua;
+            padding-left: 3px;
+            padding-right: 3px;
+            width: max-content;
+        }
+    }
+    ul {
+            list-style: none;
+        }
+</style>
+
+
+<div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+
+    <nav id="navbar-example2" class="navbar navbar-expand-lg bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#!/account">
+                <img src="images/logo.png" alt="Quest Bank Logo" width="100" height="50"> <!-- Replace "your-logo-image-url" with the actual image URL and adjust width and height as needed -->
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#!/account">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!/transaction">Do Transactions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="home" class="jumbotron">
+        <h1 class="display-3"><b>Transaction details</b></h1>
+        <hr class="m-y-2">
+        <p><strong class="text-justify">Manage your finances conveniently with our user-friendly online banking platform. Explore our range of lending solutions to make your dreams a reality. Discover investment options that can help secure your financial future.</strong></p>
+    </div>
+
+    <div class="container">
+        <div class="alert alert-success" ng-if="$ctrl.pass">
+            <strong>{{ $ctrl.passmessage }}</strong>
+        </div>
+
+        <div class="alert alert-danger" ng-if="$ctrl.fail">
+            <strong>{{ $ctrl.failmessage }}</strong>
+        </div>
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+
+<div class="container container-fluid text-center">
+    <div class="row">
+        <div class="col-sm-2">
+            <h4>My Transactions</h4>
+        </div>
+    </div>
+
+
+    <div class="row ">
+        <div class="col-sm-12 table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Transaction Type</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody ng-if="$ctrl.displayTrans">
+                <tr ng-repeat="item in ::$ctrl.transactions track by $index">
+                    <td>{{::item.id}}</td>
+                    <td>{{::item.amount}}</td>
+                    <td>{{::item.description}}</td>
+                    <td>{{::item.transactionType}}</td>
+                    <td>{{::item.date}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <p>{{$ctrl.displayTrans}}</p>
+        </div>
+    </div>
+</div>
+
+    <div class="container-fluid" id="footer">
+        <div class="row">
+            <h2>Download the app!</h2>
+            <h4>Really, why should I download this app??</h4>
+            <p><a href="#home"><img id="appstore" src="images/appstore.png" alt="image not found"></a></p>
+        </div>
+    </div>
+
+</div>

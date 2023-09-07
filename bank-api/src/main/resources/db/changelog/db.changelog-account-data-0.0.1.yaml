@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: data-0.0.1
+      author: bank team
+      changes:
+        - insert:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  value: '1'
+              - column:
+                  name: name
+                  value: admin
+              - column:
+                  name: password
+                  value: '{noop}admin'
+              - column:
+                  name: roles
+                  value: ADMIN
+              - column:
+                  name: email
+                  value: admin@gmail.com
+              - column:
+                  name: address
+                  value: House number E 385 Walton Road Lahore Cantt
+        - insert:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  value: '2'
+              - column:
+                  name: name
+                  value: hassan
+              - column:
+                  name: password
+                  value: '{noop}hassan'
+              - column:
+                  name: roles
+                  value: EDITOR,ADMIN
+              - column:
+                  name: email
+                  value: imhraza023@gmail.com
+              - column:
+                  name: address
+                  value: House number E 385 Walton Road Lahore Cantt
+        - insert:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  value: '3'
+              - column:
+                  name: name
+                  value: raza
+              - column:
+                  name: password
+                  value: '{noop}raza'
+              - column:
+                  name: roles
+                  value: USER
+              - column:
+                  name: email
+                  value: HR770735@gmail.com
+              - column:
+                  name: address
+                  value: House number E 385 Walton Road Lahore Cantt
