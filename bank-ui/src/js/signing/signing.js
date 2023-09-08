@@ -1,11 +1,16 @@
 (function() {
     'use strict';
 
-    function SigningController($http, $location) {
+    function SigningController($http, $location, SharedDataService) {
         var self = this;
         self.user = {};
 //        self.logoutstatus = false;
 //        self.loginstatus = false;
+
+        self.pass = SharedDataService.sharedData.pass;
+        self.fail = SharedDataService.sharedData.fail;
+        self.passmessage = SharedDataService.sharedData.passmessage;
+        self.failmessage = SharedDataService.sharedData.failmessage;
 
         self.login = function() {
             $http.post('login',
@@ -17,10 +22,15 @@
         }
 
         self.loginSuccess = function(response) {
-//            self.loginstatus = true;
-//            self.user.pass = "Successfully logged in.";
-//            console.log(self.user.name);
-//            console.log(self.user.password);
+
+            self.pass = true;
+            SharedDataService.sharedData.pass = self.pass;
+            self.fail = false;
+            SharedDataService.sharedData.fail = self.fail;
+            self.passmessage = "Successfully logged in";
+            SharedDataService.sharedData.passmessage = self.passmessage;
+            self.failmessage = "";
+            SharedDataService.sharedData.failmessage = self.failmessage;
 
             if(self.user.name === "admin" && self.user.password === "admin")
             {
@@ -33,13 +43,37 @@
         }
 
         self.loginFailure = function(response) {
-//            self.loginstatus = false;
+
+            self.pass = false;
+            SharedDataService.sharedData.pass = self.pass;
+            self.fail = true;
+            SharedDataService.sharedData.fail = self.fail;
+            self.passmessage = "";
+            SharedDataService.sharedData.passmessage = self.passmessage;
+            self.failmessage = "Error in logging in";
+            SharedDataService.sharedData.failmessage = self.failmessage;
             self.user.error = response.data;
-//            if (response.status === -1) {
-//                document.getElementById("loginInvalidError").innerHTML = "Username or Password Invalid!";
-//            }
+
+            console.log(response);
+
+            if (response.data === null) {
+                self.pass = false;
+                SharedDataService.sharedData.pass = self.pass;
+                self.fail = true;
+                SharedDataService.sharedData.fail = self.fail;
+                self.passmessage = "";
+                SharedDataService.sharedData.passmessage = self.passmessage;
+                self.failmessage = "Invalid username and password.";
+                SharedDataService.sharedData.failmessage = self.failmessage;
+
+                self.user.error = response.data;
+            }
             if (response.status === 403) {
                 self.login();
+            }
+            else
+            {
+                $location.path('/login');
             }
         }
 
@@ -48,20 +82,41 @@
         }
 
         self.logoutSuccess = function(response) {
-//            self.logoutstatus = true;
-//            self.user.pass = "Successfully logged out.";
+
+            self.pass = true;
+            SharedDataService.sharedData.pass = self.pass;
+            self.fail = false;
+            SharedDataService.sharedData.fail = self.fail;
+            self.passmessage = "Successfully logged out";
+            SharedDataService.sharedData.passmessage = self.passmessage;
+            self.failmessage = "";
+            SharedDataService.sharedData.failmessage = self.failmessage;
+
             $location.path('/login');
         }
 
         self.logoutFailure = function(response) {
-//            self.logoutstatus = false;
+
+            self.pass = false;
+            SharedDataService.sharedData.pass = self.pass;
+            self.fail = true;
+            SharedDataService.sharedData.fail = self.fail;
+            self.passmessage = "";
+            SharedDataService.sharedData.passmessage = self.passmessage;
+            self.failmessage = "Error in logging out";
+            SharedDataService.sharedData.failmessage = self.failmessage;
+
             self.user.error = response.data;
             if(response.status === 403){
                 self.logout();
             }
+            else
+            {
+                $location.path('/logout');
+            }
         }
     }
 
-    angular.module('bank-fe').controller('SigningController', ['$http', '$location', SigningController]);
+    angular.module('bank-fe').controller('SigningController', ['$http', '$location', 'SharedDataService', SigningController]);
 
 }());

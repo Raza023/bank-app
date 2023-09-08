@@ -80,13 +80,14 @@
         We're proud to be a part of the community, working together for a brighter financial future.</b>
 </div>
 
+<br/>
 <div class="container">
     <div class="alert alert-success" ng-if="$ctrl.pass">
-        <strong>{{ $ctrl.passmessage }}</strong>
+        <strong ng-bind="$ctrl.passmessage"></strong>
     </div>
 
     <div class="alert alert-danger" ng-if="$ctrl.fail">
-        <strong>{{ $ctrl.failmessage }}</strong>
+        <strong ng-bind="$ctrl.failmessage"></strong>
     </div>
 </div>
 

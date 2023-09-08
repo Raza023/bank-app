@@ -51,10 +51,10 @@
         self.sharedData.transactions = [];
         self.sharedData.displayTrans = false;
 
-        self.pass = false;
-        self.fail = false;
-        self.passmessage = "";
-        self.failmessage = "";
+        self.sharedData.pass = false;
+        self.sharedData.fail = false;
+        self.sharedData.passmessage = "";
+        self.sharedData.failmessage = "";
 
 
         return this;
@@ -62,6 +62,10 @@
 
     function BankController(BankService, BankService2, $routeParams,  $http, $location, $scope, SharedDataService) {
         var self = this;
+
+//        document.getElementById("#showMesssage").innerText = "";
+
+        self.currentUrl = "";
 
         self.service = BankService;
         self.service2 = BankService2;
@@ -75,9 +79,36 @@
         self.balanceId = SharedDataService.sharedData.balanceId;
         self.balance = SharedDataService.sharedData.balance; // Add a property for the logged-in user
 
+        self.pass = SharedDataService.sharedData.pass;
+        self.fail = SharedDataService.sharedData.fail;
+        self.passmessage = SharedDataService.sharedData.passmessage;
+        self.failmessage = SharedDataService.sharedData.failmessage;
+
 
         self.init = function() {
             self.search();
+
+            self.currentUrl = $location.absUrl();
+
+            if (self.currentUrl.endsWith("#!/bank")) {
+                SharedDataService.sharedData.bankItem = {};
+                self.bankItem = SharedDataService.sharedData.bankItem;
+            }
+            else
+            {
+//                console.log("URL ends with #!/bank");
+
+                const storedData = JSON.parse(localStorage.getItem('myBankItem'));
+
+//                console.log(storedData);
+
+                if (storedData) {
+                    SharedDataService.sharedData.bankItem = storedData;
+                    self.bankItem = SharedDataService.sharedData.bankItem;
+                }
+            }
+
+
 
             $http.get('/api/v1/bankAccount/auth')
             .then(function(response) {
@@ -129,14 +160,24 @@
         }
 
         self.save = function() {
+            if (!self.bankItem.password.startsWith("{noop}")) {
+              self.bankItem.password = "{noop}" + self.bankItem.password;
+            }
             self.service.save(self.bankItem).$promise.then(function(response) {
                 self.bankItem.id = response.content.id;
+
+                document.getElementById("#showMesssage").innerHtml = '<div class="alert alert-success"><strong>Account saved successfully.</strong></div>';
+
+            }).catch(function(response) {
+                if (response.status === 403) {
+                    self.save();
+                }
+
+                document.getElementById("#showMesssage").innerHtml = "Error in creating account.";
             });
         }
 
         self.showToUpdate = function(item) {
-
-            $location.path('/bank/' + item.id); // Update the URL to include the item's ID
 
             self.bankItem.id = item.id;
             self.bankItem.name = item.name;
@@ -144,6 +185,12 @@
             self.bankItem.roles =item.roles;
             self.bankItem.email= item.email;
             self.bankItem.address= item.address;
+
+            SharedDataService.sharedData.bankItem = self.bankItem;
+
+            localStorage.setItem('myBankItem', JSON.stringify(self.bankItem));
+
+            $location.path('/bank/' + item.id); // Update the URL to include the item's ID
 
 //            console.log(self.bankItem);
         };
@@ -175,9 +222,13 @@
             self.display = false;
             self.bankItem = item;
             if (self.bankItem.id) {
-               self.service.delete({ id: self.bankItem.id }).$promise.then(function(deleteResponse) {
+                self.service.delete({ id: self.bankItem.id }).$promise.then(function(deleteResponse) {
                     self.display = true;
                     self.bank = deleteResponse.content;
+                }).catch(function(response) {
+                    if (response.status === 403) {
+                        self.delete(item);
+                    }
                 });
             } else {
                 console.log('Invalid id for deletion.');

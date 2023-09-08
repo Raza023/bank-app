@@ -115,13 +115,7 @@
     <br/>
 
     <div class="container">
-        <div class="alert alert-success" ng-if="$ctrl.pass">
-            <strong>{{ $ctrl.passmessage }}</strong>
-        </div>
-
-        <div class="alert alert-danger" ng-if="$ctrl.fail">
-            <strong>{{ $ctrl.failmessage }}</strong>
-        </div>
+        <div id="showMesssage"></div>
     </div>
 
     <div class="container">
@@ -154,7 +148,12 @@
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">Roles</label>
                 <div class="col-sm-4">
-                    <input class="form-control" type="text" id="roles" ng-model="$ctrl.bankItem.roles" required >
+                    <select class="form-control" id="roles" ng-model="$ctrl.bankItem.roles" required name="roles">
+                        <option value="">Select Roles</option>
+                        <option value="USER">USER</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+<!--                    <input class="form-control" type="text" id="roles" ng-model="$ctrl.bankItem.roles" required >-->
                 </div>
             </div>
             <div class="row mb-3">
