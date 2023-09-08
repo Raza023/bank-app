@@ -1,11 +1,8 @@
 package com.redmath.project.bank.Transaction;
 
-import com.redmath.project.bank.Account.Account;
-import com.redmath.project.bank.Balance.Balance;
 import com.redmath.project.bank.basic.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

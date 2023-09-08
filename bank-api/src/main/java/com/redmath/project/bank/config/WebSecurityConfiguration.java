@@ -3,7 +3,6 @@ package com.redmath.project.bank.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -58,10 +57,10 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests(config -> config
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**")).hasAuthority("ADMIN")
 //                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/{id}")).permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/auth")).permitAll()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/auth")).permitAll()
 //                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/email/{email}")).permitAll()
 //                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/**")).hasAuthority("ADMIN")
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/**")).permitAll()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/**")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankTransaction")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankTransaction/**")).permitAll()
                 .anyRequest().authenticated());

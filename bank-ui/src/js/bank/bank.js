@@ -150,9 +150,6 @@
 
         self.showTransactions = function(item)
         {
-
-            $location.path('/showTransactions/' + item.userId);
-
             console.log(item.userId);
 
             self.service2.get({ userId: item.userId }).$promise
@@ -166,6 +163,8 @@
 
                 console.log(self.displayTrans);
                 console.log(self.transactions);
+
+                $location.path('/showTransactions/' + item.userId);
             })
             .catch(function(error) {
                 console.log('Error fetching user data:', error);

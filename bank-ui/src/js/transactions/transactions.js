@@ -98,8 +98,12 @@
             // Create a string in the format YYYY-MM-DD
             var dateString = year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
 
+            // Create a Date object from the string
+            var dateObject = new Date(dateString);
+
+//            console.log(dateObject);
             // Set the current date to your model
-//            self.transactionItem.date = dateString;
+            self.transactionItem.date = dateObject;
 //            self.search();
         }
 
@@ -110,6 +114,8 @@
                 self.emails = response.content;
                 console.log(self.emails);
             });
+
+            self.transactionItem.date = new Date().toISOString().slice(0, 10); // Format as yyyy-MM-dd
         }
 
         self.save = function() {
@@ -128,26 +134,35 @@
 //                    console.log(response.data.content);
                 if(self.balance.amount >= self.transactionItem.amount)
                 {
-                    self.service.save(self.transactionItem).$promise.then(function(response) {
-                        self.transactionItem.id = response.content.id;
-                        console.log(self.transactionItem);
-                        console.log("Sender transaction done.");
+                    if(self.transactionItem.amount > 0)
+                    {
+                        self.service.save(self.transactionItem).$promise.then(function(response) {
+                            self.transactionItem.id = response.content.id;
+//                            console.log(self.transactionItem);
+                            console.log("Sender transaction done.");
+                        });
 
-                    });
-
-//                    self.balance.id = self.loggedInUser.id;
-//                    self.balance.amount = self.balance.amount - self.transactionItem.amount;
-//                    self.balance.lastTransaction = self.transactionItem.transactionType;
-//                    self.balance.date = self.transactionItem.date;
-//                    self.balance.userId = self.loggedInUser.id;
-//                    SharedDataService.sharedData.balance = self.balance;
-//                    console.log(self.balance);
-//
-//                    self.service3.save(self.balance).$promise.then(function(response) {
-////                        self.balance.id = response.content.id;
+//                        self.balance.id = self.loggedInUser.id;
+//                        self.balance.amount = self.balance.amount - self.transactionItem.amount;
+//                        self.balance.lastTransaction = self.transactionItem.transactionType;
+//                        self.balance.date = self.transactionItem.date;
+//                        self.balance.userId = self.loggedInUser.id;
+//                        SharedDataService.sharedData.balance = self.balance;
 //                        console.log(self.balance);
-//                        console.log("Sender balance done.");
-//                    });
+//
+//                        self.service3.save(self.balance).$promise.then(function(response) {
+////                            self.balance.id = response.content.id;
+////                            console.log(self.balance);
+//                            console.log("Sender balance done.");
+//                        });
+                    }
+                    else
+                    {
+                        console.log("Please enter amount greater than 0");
+                    }
+
+
+
 //                    $http.get('/api/v1/bankAccount/email/'+self.selectedEmail)
 //                        .then(function(response) {
 //                            self.receiverId = response.data.content.id;
@@ -198,8 +213,6 @@
             .catch(function(error) {
                 console.log('Error fetching user data:', error);
             });
-
-
         }
 
         self.init();

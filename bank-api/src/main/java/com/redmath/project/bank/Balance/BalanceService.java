@@ -1,6 +1,5 @@
 package com.redmath.project.bank.Balance;
 
-import com.redmath.project.bank.Account.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

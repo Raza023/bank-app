@@ -1,6 +1,5 @@
 package com.redmath.project.bank.Transaction;
 
-import com.redmath.project.bank.Account.Account;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

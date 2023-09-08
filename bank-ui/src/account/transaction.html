@@ -119,7 +119,7 @@
     <br/>
 
     <div class="container">
-        <form ng-submit="$ctrl.save()">
+        <form name="myForm" ng-submit="$ctrl.save()">
             <div class="row mb-3">
                 <div class="col-sm-2"></div>
                 <div class="col-sm-4">
@@ -136,7 +136,7 @@
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">Amount</label>
                 <div class="col-sm-4">
-                    <input class="form-control" type="number" id="amount" ng-model="$ctrl.transactionItem.amount" required>
+                    <input class="form-control" type="number" id="amount" min="1" ng-model="$ctrl.transactionItem.amount"  required>
                 </div>
             </div>
             <div class="row mb-3">
@@ -148,8 +148,9 @@
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">Transaction Type</label>
                 <div class="col-sm-4">
-                    <select class="form-control" id="transactiontype" ng-model="$ctrl.transactionItem.transactionType" required>
-                        <!--                    <option value="credit" selected>Credit</option>-->
+
+                    <select class="form-control" id="transactiontype" ng-model="$ctrl.transactionItem.transactionType" required name="ttype">
+                        <option value="">Select Type</option>
                         <option value="debit">Debit</option>
                     </select>
                 </div>
@@ -157,13 +158,13 @@
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">Date</label>
                 <div class="col-sm-4">
-                    <input class="form-control" type="date" id="currentDate" id="date" placeholder="date" ng-model="$ctrl.transactionItem.date" required >
+                    <input class="form-control" type="date" id="currentDate" id="date" placeholder="date" ng-model="$ctrl.transactionItem.date" readonly required >
                 </div>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">Receiver</label>
                 <div class="col-sm-4">
-                    <select class="form-control" id="receiver" ng-model="$ctrl.selectedEmail" required>
+                    <select class="form-control" id="receiver" ng-model="$ctrl.selectedEmail" required name="receiver">
                         <option value="">Select Receiver</option>
                         <option ng-repeat="receiver in $ctrl.emails" value="{{receiver.email}}">
                             {{receiver.email}}
@@ -179,6 +180,15 @@
                 </div>
             </div>
         </form>
+
+        <div ng-show="myForm.ttype.$error.required">
+            Transaction type is required.
+        </div>
+
+        <div ng-show="myForm.receiver.$error.required">
+            Receiver is required.
+        </div>
+
     </div>
 
     <div class="container-fluid" id="footer">
