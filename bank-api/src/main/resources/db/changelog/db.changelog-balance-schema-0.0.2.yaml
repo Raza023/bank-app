@@ -38,6 +38,7 @@ databaseChangeLog:
             tableName: balances
             columnNames: id
             constraintName: balances_pk
+
 #  - changeSet:
 #      id: alter-accounts-auto-increment
 #      author: bank team

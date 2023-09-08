@@ -57,9 +57,9 @@ public class WebSecurityConfiguration {
 
         http.authorizeHttpRequests(config -> config
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**")).hasAuthority("ADMIN")
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/{id}")).permitAll()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/{id}")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/auth")).permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/email/{email}")).permitAll()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/email/{email}")).permitAll()
 //                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/**")).hasAuthority("ADMIN")
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankAccount/**")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/bankTransaction")).permitAll()

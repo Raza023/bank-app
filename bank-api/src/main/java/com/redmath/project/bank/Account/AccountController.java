@@ -28,6 +28,7 @@ public class AccountController {
     }
 
 
+    @PreAuthorize("permitAll()")
     @CacheEvict(value = "userNameCache", allEntries = true)
     @GetMapping("/auth")
     public ResponseEntity<ApiResponse<Account>> getAuthenticatedUser()
@@ -99,6 +100,7 @@ public class AccountController {
         }
     }
 
+    @PreAuthorize("permitAll()")
     @CacheEvict(value = "userNameCache", allEntries = true)
     @GetMapping("/all")
     public ResponseEntity<List<Account>> findAll()
@@ -106,6 +108,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findAll());
     }
 
+    @PreAuthorize("permitAll()")
     @CacheEvict(value = "userNameCache", allEntries = true)
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Account>> findById(@PathVariable("id") Long id)
@@ -119,6 +122,7 @@ public class AccountController {
         return ResponseEntity.ok(acc);
     }
 
+    @PreAuthorize("permitAll()")
     @CacheEvict(value = "userNameCache", allEntries = true)
     @GetMapping("/email/{email}")
     public ResponseEntity<ApiResponse<Optional<Account>>> findByEmail(@PathVariable("email") String email)
@@ -132,6 +136,7 @@ public class AccountController {
         return ResponseEntity.ok(ApiResponse.of(acc));
     }
 
+    @PreAuthorize("permitAll()")
     @Cacheable("userNameCache") // Define a cache named "userNameCache"
     @GetMapping
     public ResponseEntity<ApiResponse<List<Account>>> findAllByName(

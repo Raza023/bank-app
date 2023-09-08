@@ -53,5 +53,7 @@ management:
 
 server:
   port: 9080
+#  servlet:
+#    context-path: /bank
 
 spring.profiles.include: dev,local
