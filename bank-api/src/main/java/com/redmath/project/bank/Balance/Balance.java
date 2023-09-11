@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Entity(name= "balances")
 public class Balance {
 
-    //DATE, AMOUNT, DB/CR Indicator
+    //amount, lastTransaction, date, userId
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "balance_sequence")

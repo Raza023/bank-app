@@ -1,5 +1,7 @@
 package com.redmath.project.bank.Balance;
 
+import com.redmath.project.bank.Account.Account;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -40,5 +42,37 @@ public class BalanceService {
 
     public Balance findByUserId(Long id) {
         return balanceRepository.findAllByUserId(id);
+    }
+
+    @Transactional
+    public Balance insert(Balance balToInsert) {
+        Long balId = balToInsert.getId();
+        if(balId != null && balanceRepository.existsById(balId))
+        {
+            return null;
+        }
+
+        return balanceRepository.save(balToInsert);
+    }
+
+    @Transactional
+    public Balance update(Balance updatedBalance, Long id) {
+        Optional<Balance> existingBal = balanceRepository.findById(id);
+
+        if (existingBal.isEmpty())
+        {
+            return null;
+        }
+
+        Balance existingBalance = existingBal.get();
+
+        existingBalance.setAmount(updatedBalance.getAmount());
+        existingBalance.setDate(updatedBalance.getDate());
+        existingBalance.setLastTransaction(updatedBalance.getLastTransaction());
+        existingBalance.setUserId(updatedBalance.getUserId());
+
+        balanceRepository.save(existingBalance);
+
+        return existingBalance;
     }
 }

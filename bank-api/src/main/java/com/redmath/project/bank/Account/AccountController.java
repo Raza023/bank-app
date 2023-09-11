@@ -101,9 +101,9 @@ public class AccountController {
     @PreAuthorize("permitAll()")
     @CacheEvict(value = "userNameCache", allEntries = true)
     @GetMapping("/all")
-    public ResponseEntity<List<Account>> findAll()
+    public ResponseEntity<ApiResponse<List<Account>>> findAll()
     {
-        return ResponseEntity.ok(accountService.findAll());
+        return ResponseEntity.ok(ApiResponse.of(accountService.findAll()));
     }
 
     @PreAuthorize("permitAll()")

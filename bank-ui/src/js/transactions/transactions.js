@@ -76,7 +76,7 @@
         self.transactions = [];
         self.transactionItem = {};                                // Define the transaction item as needed
         self.receiverTransactionItem = {};                                // Define the transaction item as needed
-        self.loggedInUser = SharedDataService.sharedData.loggedIn; // Assuming this property is already defined
+        self.loggedInUser = SharedDataService.sharedData.loggedInUser; // Assuming this property is already defined
         self.balanceId = SharedDataService.sharedData.balanceId; // Assuming this property is already defined
         self.balance = SharedDataService.sharedData.balance; // Assuming this property is already defined
         self.emails = [];
@@ -112,7 +112,11 @@
             self.service2.get().$promise.then(function(response) {
                 self.display = true;
                 self.emails = response.content;
+//                console.log(self.emails);
+                let filteredEmails = self.emails.filter(email => email.email !== self.loggedInUser.email);
+                self.emails = filteredEmails;   //loggedInUser email excluded.
                 console.log(self.emails);
+//                console.log(filteredEmails);
             });
 
             self.transactionItem.date = new Date().toISOString().slice(0, 10); // Format as yyyy-MM-dd
@@ -123,96 +127,141 @@
             console.log(self.loggedInUser.id);
             self.transactionItem.userId = self.loggedInUser.id;
 
-            self.balanceId = self.loggedInUser.id;
-            SharedDataService.sharedData.balanceId = self.balanceId; // Update the shared data
+            if(self.transactionItem.id)
+            {
+                document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Transaction has already been done. Refresh this page and commit another transaction.</strong></div>';
+                //nothing to do here. :)  just chill out
+            }
+            else
+            {
+                $http.get('/api/v1/bankBalance/balance/'+self.loggedInUser.id)
+                .then(function(response) {
+                    // Assuming the user data is available in the response.data
+                    self.balance = response.data.content;
+                    SharedDataService.sharedData.balance = self.balance; // Update the shared data
 
-            $http.get('/api/v1/bankBalance/balance/'+self.balanceId)
-            .then(function(response) {
-                // Assuming the user data is available in the response.data
-                self.balance = response.data.content;
-                SharedDataService.sharedData.balance = self.balance; // Update the shared data
-//                    console.log(response.data.content);
-                if(self.balance.amount >= self.transactionItem.amount)
-                {
-                    if(self.transactionItem.amount > 0)
+                    self.balanceId = response.data.content.id;
+                    SharedDataService.sharedData.balanceId = self.balanceId; // Update the shared data
+                    console.log(response.data.content);
+                    if(self.balance.amount >= self.transactionItem.amount)
                     {
                         self.service.save(self.transactionItem).$promise.then(function(response) {
                             self.transactionItem.id = response.content.id;
-//                            console.log(self.transactionItem);
                             console.log("Sender transaction done.");
-                        });
 
-//                        self.balance.id = self.loggedInUser.id;
-//                        self.balance.amount = self.balance.amount - self.transactionItem.amount;
-//                        self.balance.lastTransaction = self.transactionItem.transactionType;
-//                        self.balance.date = self.transactionItem.date;
-//                        self.balance.userId = self.loggedInUser.id;
-//                        SharedDataService.sharedData.balance = self.balance;
-//                        console.log(self.balance);
-//
-//                        self.service3.save(self.balance).$promise.then(function(response) {
-////                            self.balance.id = response.content.id;
-////                            console.log(self.balance);
-//                            console.log("Sender balance done.");
-//                        });
+                            console.log(self.transactionItem);
+
+                            self.balance.id = self.balanceId;
+                            self.balance.amount = self.balance.amount - self.transactionItem.amount;
+                            self.balance.lastTransaction = self.transactionItem.transactionType;
+                            self.balance.date = self.transactionItem.date;
+                            self.balance.userId = self.loggedInUser.id;
+                            SharedDataService.sharedData.balance = self.balance;
+                            console.log(self.balance);
+
+                            self.service3.save(self.balance).$promise.then(function(response) {
+    //                            self.balance.id = response.content.id;
+                                console.log(self.balance);
+                                console.log("Sender balance done.");
+
+                                $http.get('/api/v1/bankAccount/email/'+self.selectedEmail)
+                                    .then(function(response) {
+                                        self.receiverId = response.data.content.id;
+
+                                        //amount, description, transactionType, date, userId
+
+                                        self.receiverTransactionItem.amount = self.transactionItem.amount;
+                                        self.receiverTransactionItem.description = self.transactionItem.description;
+                                        self.receiverTransactionItem.transactionType = "credit";
+                                        self.receiverTransactionItem.date = self.transactionItem.date;
+                                        self.receiverTransactionItem.userId = self.receiverId;
+
+                                        self.service.save(self.receiverTransactionItem).$promise.then(function(response) {
+                                            self.receiverTransactionItem.id = response.content.id;
+                                            console.log(self.receiverTransactionItem);
+                                            console.log("Receiver transaction done.");
+
+                                            $http.get('/api/v1/bankBalance/balance/'+self.receiverId)
+                                                .then(function(response) {
+                                                    // Assuming the user data is available in the response.data
+                                                    self.balance = response.data.content;
+                                                    SharedDataService.sharedData.balance = self.balance; // Update the shared data
+
+    //                                                self.balance.id = self.receiverId;
+                                                    self.balance.amount = self.balance.amount + self.transactionItem.amount;
+                                                    self.balance.lastTransaction = "credit";
+                                                    self.balance.date = self.transactionItem.date;
+    //                                                self.balance.userId = self.receiverId;
+                                                    SharedDataService.sharedData.balance = self.balance;
+    //                                                console.log(self.balance);
+
+                                                    self.service3.save(self.balance).$promise.then(function(response) {
+                                                        //                        self.balance.id = response.content.id;
+                                                        console.log(self.balance);
+                                                        console.log("Receiver balance done.");
+
+                                                        document.getElementById("showMesssage").innerHTML = '<div class="alert alert-success"><strong>Transactions successfully completed.</strong></div>';
+
+                                                    }).catch(function (response){
+                                                        if(response.status === 403)
+                                                        {
+                                                            self.save();
+                                                        }
+                                                        document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in receiver balance.</strong></div>';
+                                                    });
+                                                }).catch(function (response){
+                                                    if(response.status === 403)
+                                                    {
+                                                        self.save();
+                                                    }
+                                                    document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in fetching receiver balance.</strong></div>';
+                                                });
+                                        }).catch(function (response){
+                                            if(response.status === 403)
+                                            {
+                                                self.save();
+                                            }
+                                            document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in Receiver transaction.</strong></div>';
+                                        });
+                                    }).catch(function (response){
+                                        if(response.status === 403)
+                                        {
+                                            self.save();
+                                        }
+                                        document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in fetching receiver Id.</strong></div>';
+                                    });
+
+                            }).catch(function (response){
+                                if(response.status === 403)
+                                {
+                                    self.save();
+                                }
+                                document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in sender balance.</strong></div>';
+                            });
+                        }).catch(function (response){
+                            if(response.status === 403)
+                            {
+                                self.save();
+                            }
+                            document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in sender transaction.</strong></div>';
+                        });
                     }
                     else
                     {
-                        console.log("Please enter amount greater than 0");
+                        document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>You don\'t have enough bank balance to perform this transaction.</strong></div>';
                     }
+                })
+                .catch(function(response) {
+                    if(response.status === 403)
+                    {
+                        self.save();
+                    }
+                    document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in processing transaction, Please check your transaction data.</strong></div>';
+                    console.log('Error fetching user data:', error);
+                });
+            }
 
 
-
-//                    $http.get('/api/v1/bankAccount/email/'+self.selectedEmail)
-//                        .then(function(response) {
-//                            self.receiverId = response.data.content.id;
-//
-//                            //amount, description, transactionType, date, userId
-//
-//                            self.receiverTransactionItem.amount = self.transactionItem.amount;
-//                            self.receiverTransactionItem.description = self.transactionItem.description;
-//                            self.receiverTransactionItem.transactionType = self.transactionItem.transactionType;
-//                            self.receiverTransactionItem.date = self.transactionItem.date;
-//                            self.receiverTransactionItem.userId = self.receiverId;
-//
-//                            self.service.save(self.receiverTransactionItem).$promise.then(function(response) {
-//                                self.receiverTransactionItem.id = response.content.id;
-//                                console.log(self.receiverTransactionItem);
-//                                console.log("Receiver transaction done.");
-//                            });
-//
-//                            $http.get('/api/v1/bankBalance/balance/'+self.receiverId)
-//                                .then(function(response) {
-//                                    // Assuming the user data is available in the response.data
-//                                    self.balance = response.data.content;
-//                                    SharedDataService.sharedData.balance = self.balance; // Update the shared data
-//
-//                                    self.balance.id = self.receiverId;
-//                                    self.balance.amount = self.balance.amount + self.transactionItem.amount;
-//                                    self.balance.lastTransaction = "credit";
-//                                    self.balance.date = self.transactionItem.date;
-//                                    self.balance.userId = self.receiverId;
-//                                    SharedDataService.sharedData.balance = self.balance;
-//                                    console.log(self.balance);
-//
-//                                    self.service3.save(self.balance).$promise.then(function(response) {
-//                //                        self.balance.id = response.content.id;
-//                                        console.log(self.balance);
-//                                        console.log("Receiver balance done.");
-//                                    });
-//
-//                                }
-//
-//                        }
-                }
-                else
-                {
-                    console.log("You don't have enough bank balance to perform this transaction.")
-                }
-            })
-            .catch(function(error) {
-                console.log('Error fetching user data:', error);
-            });
         }
 
         self.init();

@@ -5,12 +5,12 @@ import com.redmath.project.bank.Account.AccountService;
 import com.redmath.project.bank.basic.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +29,28 @@ public class BalanceController {
     {
         this.balanceService = balanceService;
         this.accountService = accountService;
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<Balance>> insert(@RequestBody Balance balToInsert)
+    {
+        Balance createdBal = balanceService.insert(balToInsert);
+        if(createdBal != null)
+        {
+            return ResponseEntity.ok(ApiResponse.of(createdBal));
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<ApiResponse<Balance>> update(@RequestBody Balance updatedBalance, @PathVariable("id") Long id)
+    {
+        Balance updated = balanceService.update(updatedBalance,id);   //to save on db as well
+
+        if (updated != null) {
+            return ResponseEntity.ok(ApiResponse.of(updated));
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping

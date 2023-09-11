@@ -41,11 +41,50 @@
 
     angular.module('bank-fe').factory('BankService2', ['$resource', BankService2]);
 
+    function BankService3($resource) {
+        return $resource('/api/v1/bankAccount/all/', {}, {
+            update: {
+                method: 'PUT'
+            },
+            get: {
+                method: 'GET'
+//                    isArray: true // Add this line to handle array response
+            },
+            save: {
+                method: 'POST'
+            },
+            remove: {
+                method: 'DELETE'
+            }
+        });
+    }
+
+    angular.module('bank-fe').factory('BankService3', ['$resource', BankService3]);
+
+    function BankService4($resource) {
+        return $resource('/api/v1/bankBalance/:id', { id: '@id' }, {
+            update: {
+                method: 'PUT'
+            },
+            get: {
+                method: 'GET'
+            },
+            save: {
+                method: 'POST'
+            },
+            remove: {
+                method: 'DELETE'
+            }
+        });
+    }
+
+    angular.module('bank-fe').factory('BankService4', ['$resource', BankService4]);
+
     angular.module('bank-fe').factory('SharedDataService', function() {
         var self = this;
         self.sharedData = {};
         self.sharedData.bankItem = {};
-        self.sharedData.loggedIn = {};
+        self.sharedData.loggedInUser = {};
         self.sharedData.balance = {};
         self.sharedData.balanceId = 1;
         self.sharedData.transactions = [];
@@ -56,11 +95,10 @@
         self.sharedData.passmessage = "";
         self.sharedData.failmessage = "";
 
-
         return this;
     });
 
-    function BankController(BankService, BankService2, $routeParams,  $http, $location, $scope, SharedDataService) {
+    function BankController(BankService, BankService2, BankService3, BankService4, $routeParams,  $http, $location, $scope, SharedDataService) {
         var self = this;
 
 //        document.getElementById("#showMesssage").innerText = "";
@@ -69,13 +107,15 @@
 
         self.service = BankService;
         self.service2 = BankService2;
+        self.service3 = BankService3;
+        self.service4 = BankService4;
         self.bank = [];
         self.title = '';
         self.display = false;
         self.displayTrans = SharedDataService.sharedData.displayTrans;
         self.transactions = SharedDataService.sharedData.transactions;
         self.bankItem = SharedDataService.sharedData.bankItem;
-        self.loggedInUser = SharedDataService.sharedData.loggedIn; // Add a property for the logged-in user
+        self.loggedInUser = SharedDataService.sharedData.loggedInUser; // Add a property for the logged-in user
         self.balanceId = SharedDataService.sharedData.balanceId;
         self.balance = SharedDataService.sharedData.balance; // Add a property for the logged-in user
 
@@ -114,7 +154,7 @@
             .then(function(response) {
                 // Assuming the user data is available in the response.data
                 self.loggedInUser = response.data.content;
-                SharedDataService.sharedData.loggedIn = self.loggedInUser; // Update the shared data
+                SharedDataService.sharedData.loggedInUser = self.loggedInUser; // Update the shared data
                 if(response.data.content !== null)
                 {
                     self.balanceId = response.data.content.id;
@@ -159,21 +199,105 @@
             });
         }
 
+//        self.checkUserNameExist(response)
+//        {
+//            let data = response.data;
+//
+//            for(let i = 0; i < data.length; i++)
+//            {
+//                console.log(data[i].name+i);
+//            }
+//        }
+
         self.save = function() {
             if (!self.bankItem.password.startsWith("{noop}")) {
               self.bankItem.password = "{noop}" + self.bankItem.password;
             }
-            self.service.save(self.bankItem).$promise.then(function(response) {
-                self.bankItem.id = response.content.id;
 
-                document.getElementById("#showMesssage").innerHtml = '<div class="alert alert-success"><strong>Account saved successfully.</strong></div>';
+            var isExist = false;
 
-            }).catch(function(response) {
-                if (response.status === 403) {
-                    self.save();
+            self.service3.get().$promise.then(function(response){
+                console.log(response.content);
+
+                let myData = response.content;
+
+                isExist = false;
+
+                for (let i = 0; i < myData.length; i++) {
+                    if (myData[i].name === self.bankItem.name || myData[i].email === self.bankItem.email) {
+                        isExist = true;
+                        break;
+                    }
                 }
 
-                document.getElementById("#showMesssage").innerHtml = "Error in creating account.";
+//                console.log(self.bankItem.id+"check");
+
+                if(self.bankItem.id)
+                {
+                    self.service.save(self.bankItem).$promise.then(function(response){
+                        self.bankItem.id = response.content.id;
+
+                        console.log("account update");
+
+                        document.getElementById("showMesssage").innerHTML = '<div class="alert alert-success"><strong>Account updated successfully.</strong></div>';
+                    }).catch(function(response) {
+                        if (response.status === 403)
+                        {
+                            self.save();
+                        }
+                        document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in updating account.</strong></div>';
+                    });
+                }
+                else
+                {
+                    console.log("account create");
+
+                    if(isExist)
+                    {
+                        document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Username or email already exist.</strong></div>';
+                    }
+                    else
+                    {
+                        self.service.save(self.bankItem).$promise.then(function(response){
+                            self.bankItem.id = response.content.id;
+
+                            self.balance = {};
+
+                            self.balance.amount = 0;
+                            self.balance.userId = self.bankItem.id;
+
+                            console.log("created user ID: "+ self.balance.userId);
+
+                            self.service4.save(self.balance).$promise.then(function(response){
+                                self.balance.id = response.content.id;
+                                self.balance.lastTransaction = response.content.lastTransaction;
+                                self.balance.date = response.content.date;
+
+                                console.log(self.balance);
+
+                                document.getElementById("showMesssage").innerHTML = '<div class="alert alert-success"><strong>Account saved successfully.</strong></div>';
+                            }).catch(function(response) {
+                                if (response.status === 403)
+                                {
+                                    self.save();
+                                }
+                                document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in creating account balance.</strong></div>';
+                            });
+                        }).catch(function(response) {
+                            if (response.status === 403)
+                            {
+                                self.save();
+                            }
+                            document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Error in creating account.</strong></div>';
+                        });
+                    }
+                }
+            }).catch(function(response) {
+                console.log('Error fetching Accounts:', response);
+                if (response.status === 403)
+                {
+                    self.save();
+                }
             });
         }
 
@@ -238,6 +362,6 @@
         self.init();
     }
 
-    angular.module("bank-fe").controller('BankController', ['BankService','BankService2', '$routeParams' ,'$http', '$location', '$scope', 'SharedDataService', BankController]);
+    angular.module("bank-fe").controller('BankController', ['BankService','BankService2','BankService3', 'BankService4', '$routeParams' ,'$http', '$location', '$scope', 'SharedDataService', BankController]);
 
 }());

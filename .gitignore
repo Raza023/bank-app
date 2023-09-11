@@ -1,6 +1,7 @@
 # Ignore files in the root directory
 /target/
 /.idea/
+/.vscode/
 *.iml
 
 # Ignore files in the 'bank-api' directory, except 'src' and 'pom.xml'
@@ -16,3 +17,5 @@
 
 # Ignore all '.json' files in the root directory
 #*.json
+
+.fake

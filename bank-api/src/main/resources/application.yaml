@@ -1,10 +1,10 @@
 # it is used to log the sql on console.
 logging:
-  #  pattern:
-  #    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}] ${HOSTNAME}"
-  #    console:
-  file:
-    name: target/news.log
+#    pattern:
+#      level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}] ${HOSTNAME}"
+#      console:
+#  file:
+#    name: target/news.log
   level:
     sql: debug
     web: debug
