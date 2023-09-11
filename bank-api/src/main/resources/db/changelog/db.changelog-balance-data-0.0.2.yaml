@@ -50,7 +50,7 @@ databaseChangeLog:
                   value: '45000'
               - column:
                   name: last_transaction
-                  value: debit
+                  value: credit
               - column:
                   name: date
                   value: '2000-01-01T12:00:00'

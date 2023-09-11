@@ -38,7 +38,7 @@ databaseChangeLog:
                   value: '{noop}hassan'
               - column:
                   name: roles
-                  value: USER,ADMIN
+                  value: USER
               - column:
                   name: email
                   value: imhraza023@gmail.com

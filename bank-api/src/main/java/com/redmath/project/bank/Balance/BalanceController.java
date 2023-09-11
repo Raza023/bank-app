@@ -98,7 +98,4 @@ public class BalanceController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
-
 }
