@@ -260,10 +260,7 @@
                     console.log('Error fetching user data:', error);
                 });
             }
-
-
         }
-
         self.init();
     }
 

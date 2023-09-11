@@ -28,7 +28,7 @@
             },
             get: {
                 method: 'GET',
-                params: { userId: '@userId' },
+                params: { userId: '@userId' }
             },
             save: {
                 method: 'POST'
@@ -80,6 +80,26 @@
 
     angular.module('bank-fe').factory('BankService4', ['$resource', BankService4]);
 
+    function BankService5($resource) {
+        return $resource('/api/v1/bankBalance/balance/:userId', {}, {
+            update: {
+                method: 'PUT'
+            },
+            get: {
+                method: 'GET'
+            },
+            save: {
+                method: 'POST'
+            },
+            remove: {
+                method: 'DELETE',
+                params: { userId: '@userId' }
+            }
+        });
+    }
+
+    angular.module('bank-fe').factory('BankService5', ['$resource', BankService5]);
+
     angular.module('bank-fe').factory('SharedDataService', function() {
         var self = this;
         self.sharedData = {};
@@ -98,7 +118,7 @@
         return this;
     });
 
-    function BankController(BankService, BankService2, BankService3, BankService4, $routeParams,  $http, $location, $scope, SharedDataService) {
+    function BankController(BankService, BankService2, BankService3, BankService4,BankService5, $routeParams,  $http, $location, $scope, SharedDataService) {
         var self = this;
 
 //        document.getElementById("#showMesssage").innerText = "";
@@ -109,6 +129,7 @@
         self.service2 = BankService2;
         self.service3 = BankService3;
         self.service4 = BankService4;
+        self.service5 = BankService5;
         self.bank = [];
         self.title = '';
         self.display = false;
@@ -346,9 +367,22 @@
             self.display = false;
             self.bankItem = item;
             if (self.bankItem.id) {
+
+                var deletedUserId = self.bankItem.id;
+
                 self.service.delete({ id: self.bankItem.id }).$promise.then(function(deleteResponse) {
                     self.display = true;
                     self.bank = deleteResponse.content;
+
+                    self.service5.delete({userId: self.bankItem.id}).$promise.then(function(accDeleteResponse){
+                        console.log(accDeleteResponse);
+                        console.log("Account also deleted.");
+                    }).catch(function(response) {
+                        if (response.status === 403) {
+                            self.delete(item);
+                        }
+                    });
+
                 }).catch(function(response) {
                     if (response.status === 403) {
                         self.delete(item);
@@ -362,6 +396,6 @@
         self.init();
     }
 
-    angular.module("bank-fe").controller('BankController', ['BankService','BankService2','BankService3', 'BankService4', '$routeParams' ,'$http', '$location', '$scope', 'SharedDataService', BankController]);
+    angular.module("bank-fe").controller('BankController', ['BankService','BankService2','BankService3', 'BankService4', 'BankService5', '$routeParams' ,'$http', '$location', '$scope', 'SharedDataService', BankController]);
 
 }());

@@ -75,4 +75,14 @@ public class BalanceService {
 
         return existingBalance;
     }
+
+    public boolean deleteByUserId(Long userId) {
+        Optional<Balance> bal = balanceRepository.findByUserId(userId);
+        if(bal.isPresent())
+        {
+            balanceRepository.deleteByUserId(userId);
+            return true;
+        }
+        return false;
+    }
 }

@@ -98,4 +98,21 @@ public class BalanceController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/balance/{userId}")
+    public ResponseEntity<ApiResponse<List<Balance>>> delete(@PathVariable("userId") Long userId)
+    {
+        boolean deleted = balanceService.deleteByUserId(userId);
+        if(deleted)
+        {
+            List<Balance> list = balanceService.findAll();
+            return ResponseEntity.ok(ApiResponse.of(list));
+        }
+        else
+        {
+            List<Balance> list = balanceService.findAll();
+            return ResponseEntity.ok(ApiResponse.of(list));
+        }
+    }
 }
