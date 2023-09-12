@@ -1,34 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Bank</title>
-    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
-</head>
+        <title>Bank</title>
+        <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
+    </head>
 
-<body>
+    <body>
 
+        <div ng-app="bank-fe">
+            <div ng-view></div>
+        </div>
 
-
-<div ng-app="bank-fe">
-    <div ng-view></div>
-</div>
-
-<script lang="javascript" src="lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script lang="javascript" src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
-<script lang="javascript" src="lib/angular/angular.min.js"></script>
-<script lang="javascript" src="lib/angular-resource/angular-resource.min.js"></script>
-<script lang="javascript" src="lib/angular-route/angular-route.min.js"></script>
-<script lang="javascript" src="js/index.js"></script>
-<script lang="javascript" src="js/bank/bank.js"></script>
-<script lang="javascript" src="js/transactions/transactions.js"></script>
-<!--<script lang="javascript" src="js/transactions/transactions2.js"></script>-->
-<script lang="javascript" src="js/signing/signing.js"></script>
-<script lang="javascript" src="js/script.js"></script>
-</body>
+        <script lang="javascript" src="lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script lang="javascript" src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script lang="javascript" src="lib/angular/angular.min.js"></script>
+        <script lang="javascript" src="lib/angular-resource/angular-resource.min.js"></script>
+        <script lang="javascript" src="lib/angular-route/angular-route.min.js"></script>
+        <script lang="javascript" src="js/index.js"></script>
+        <script lang="javascript" src="js/bank/bank.js"></script>
+        <script lang="javascript" src="js/transactions/transactions.js"></script>
+        <!--<script lang="javascript" src="js/transactions/transactions2.js"></script>-->
+        <script lang="javascript" src="js/signing/signing.js"></script>
+        <script lang="javascript" src="js/script.js"></script>
+    </body>
 
 </html>

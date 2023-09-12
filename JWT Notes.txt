@@ -1,0 +1,27 @@
+Tutorial:
+https://www.youtube.com/watch?v=rBNOc4ymd1E&ab_channel=JavaTechie
+
+Code example:
+https://github.com/Java-Techie-jt/spring-security-jwt-example
+
+Motive:
+Stateless Authentication Management
+User state(or input) is never saved in server memory or cookies.
+(We don't need csrf in this case. It will work independently without any problem.)
+Even if I have multiple server, I just have to send JSON web token to authenticate.
+
+
+------------------------------------------------------steps------------------------------------------------------
+
+-----------------------------Step 1-----------------------------
+Add dependency for jwt:
+https://central.sonatype.com/artifact/io.jsonwebtoken/jjwt
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.9.1</version>
+</dependency>
+
+-----------------------------Step 2-----------------------------
+
