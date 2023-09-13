@@ -20,7 +20,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: name
+                  name: user_name
                   type: varchar(500)
               - column:
                   name: password
@@ -40,10 +40,10 @@ databaseChangeLog:
             constraintName: accounts_pk
         - createIndex:
             tableName: accounts
-            indexName: accounts_idx_name
+            indexName: accounts_idx_user_name
             columns:
               - column:
-                  name: name
+                  name: user_name
         - createIndex:
             tableName: accounts
             indexName: accounts_idx_email

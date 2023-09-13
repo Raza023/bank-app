@@ -10,7 +10,7 @@ databaseChangeLog:
                   name: id
                   value: '1'
               - column:
-                  name: name
+                  name: user_name
                   value: admin
               - column:
                   name: password
@@ -31,7 +31,7 @@ databaseChangeLog:
                   name: id
                   value: '2'
               - column:
-                  name: name
+                  name: user_name
                   value: hassan
               - column:
                   name: password
@@ -52,7 +52,7 @@ databaseChangeLog:
                   name: id
                   value: '3'
               - column:
-                  name: name
+                  name: user_name
                   value: raza
               - column:
                   name: password

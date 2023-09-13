@@ -1,6 +1,7 @@
 package com.redmath.project.bank.Account;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity(name = "accounts")
 public class Account {
@@ -10,7 +11,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accounts_sequence")
     @SequenceGenerator(name = "accounts_sequence", sequenceName = "accounts_sequence", allocationSize = 1)
     private Long id;
-    private String name;
+    private String userName;
     private String password;
     private String roles;
     private String email;
@@ -24,12 +25,12 @@ public class Account {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String name) {
+        this.userName = name;
     }
 
     public String getPassword() {

@@ -37,6 +37,9 @@ spring:
     type: caffeine
   liquibase:
     contexts: ${bank.liquibase.contexts:}
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
 
 generator:
   strategy: sequence

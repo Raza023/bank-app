@@ -1,6 +1,7 @@
 package com.redmath.project.bank.Balance;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.time.LocalDateTime;
 

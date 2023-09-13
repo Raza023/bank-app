@@ -12,13 +12,35 @@
         self.passmessage = SharedDataService.sharedData.passmessage;
         self.failmessage = SharedDataService.sharedData.failmessage;
 
+//        self.login = function() {
+//            $http.post('login',
+//                'username=' + self.user.name + '&password=' + self.user.password, {
+//                headers: {
+//                    "Content-Type": "application/x-www-form-urlencoded"
+//                }
+//            }).then(self.loginSuccess, self.loginFailure);
+//        }
+
         self.login = function() {
-            $http.post('login',
-                'username=' + self.user.name + '&password=' + self.user.password, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-            }).then(self.loginSuccess, self.loginFailure);
+            // Send a POST request to authenticate and get the JWT token
+            $http.post('http://localhost:9080/api/v1/bankAccount/authenticate', {
+                userName: self.user.name,
+                password: self.user.password
+            }).then(function(response) {
+                // Assuming the JWT token is in the 'token' field of the response
+                var token = response.data.token;
+
+                // Store the token in local storage or a cookie for future use
+                // You should use a more secure way to store tokens in production
+
+                // Now, make the actual login request with the obtained token
+                $http.post('login', 'username=' + self.user.name + '&password=' + self.user.password, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Authorization": "Bearer " + token  // Include the JWT token in the headers
+                    }
+                }).then(self.loginSuccess, self.loginFailure);
+            }).catch(self.loginFailure);
         }
 
         self.loginSuccess = function(response) {

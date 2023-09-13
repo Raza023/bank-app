@@ -1,6 +1,7 @@
 package com.redmath.project.bank.Account;
 
-import jakarta.transaction.Transactional;
+//import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +41,7 @@ public class AccountService implements UserDetailsService {
 
     public Account findByUserName(String userName)
     {
-        return accountRepository.findByName(userName);
+        return accountRepository.findByUserName(userName);
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -50,7 +51,7 @@ public class AccountService implements UserDetailsService {
         {
             throw new UsernameNotFoundException("Invalid user: "+ username);
         }
-        return new org.springframework.security.core.userdetails.User(user.getName(),user.getPassword(), true,
+        return new org.springframework.security.core.userdetails.User(user.getUserName(),user.getPassword(), true,
                 true, true,true, AuthorityUtils.commaSeparatedStringToAuthorityList(user.getRoles()));
 
     }
@@ -93,7 +94,7 @@ public class AccountService implements UserDetailsService {
         Account existingAccount = existingAccountOptional.get();
 
         // Update the existing news item with the new data from newsToUpdate
-        existingAccount.setName(updatedAccount.getName());
+        existingAccount.setUserName(updatedAccount.getUserName());
         existingAccount.setPassword(updatedAccount.getPassword());
         existingAccount.setRoles(updatedAccount.getRoles());
         existingAccount.setEmail(updatedAccount.getEmail());
@@ -131,11 +132,11 @@ public class AccountService implements UserDetailsService {
         if (title.isEmpty() || title.isBlank()) {
             return accountRepository.findByOrderByIdDesc(pageable).getContent();
         }
-        return accountRepository.findByNameLikeOrderByIdDesc(pageable, title).getContent();
+        return accountRepository.findByUserNameLikeOrderByIdDesc(pageable, title).getContent();
     }
 
     public Account findByName(String name) {
-        return accountRepository.findByName(name);
+        return accountRepository.findByUserName(name);
     }
 
     public Authentication getMyAuth()

@@ -12,9 +12,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Page<Account> findByOrderByIdDesc(Pageable pageable);
 
-    Page<Account> findByNameLikeOrderByIdDesc(Pageable pageable, String name);
+    Page<Account> findByUserNameLikeOrderByIdDesc(Pageable pageable, String name);
 
-    Account findByName(String userName);
+    Account findByUserName(String userName);
 
     Optional<Account> findByEmail(String email);
 }

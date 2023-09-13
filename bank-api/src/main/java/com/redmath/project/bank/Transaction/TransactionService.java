@@ -1,6 +1,7 @@
 package com.redmath.project.bank.Transaction;
 
-import jakarta.transaction.Transactional;
+//import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
