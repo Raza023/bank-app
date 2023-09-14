@@ -14,34 +14,121 @@
 
 //        self.login = function() {
 //            $http.post('login',
-//                'username=' + self.user.name + '&password=' + self.user.password, {
+//                'userName=' + self.user.userName + '&password=' + self.user.password, {
 //                headers: {
 //                    "Content-Type": "application/x-www-form-urlencoded"
 //                }
 //            }).then(self.loginSuccess, self.loginFailure);
 //        }
 
+//        self.login = function() {
+//            // Send a POST request to authenticate and get the JWT token
+//            $http.post('/api/v1/bankAccount/authenticate', {
+//                userName:self.user.userName,
+//                password:self.user.password
+//            }).then(function(response) {
+//                // Assuming the JWT token is in the 'token' field of the response
+//                var token = response.data.content;
+//                console.log(response);
+//                console.log(token);
+//
+////                self.loginSuccess();
+////                 Store the token in local storage or a cookie for future use
+////                 You should use a more secure way to store tokens in production
+////
+////                 Now, make the actual login request with the obtained token
+//                $http.post('login',
+//                    'userName=' + self.user.userName + '&password=' + self.user.password,
+//                {
+//                    headers: {
+//                        "Content-Type": "application/x-www-form-urlencoded",
+//                        "Authorization": "Bearer " + token
+//                    }
+//                }).then(self.loginSuccess, self.loginFailure);
+//            }).catch(self.loginFailure);
+//        }
+
         self.login = function() {
-            // Send a POST request to authenticate and get the JWT token
-            $http.post('http://localhost:9080/api/v1/bankAccount/authenticate', {
-                userName: self.user.name,
+            $http.post('/api/v1/bankAccount/authenticate', {
+                userName: self.user.userName,
                 password: self.user.password
             }).then(function(response) {
-                // Assuming the JWT token is in the 'token' field of the response
-                var token = response.data.token;
+                var token = response.data.content;
+                console.log(response);
+                console.log(token);
 
-                // Store the token in local storage or a cookie for future use
-                // You should use a more secure way to store tokens in production
 
-                // Now, make the actual login request with the obtained token
-                $http.post('login', 'username=' + self.user.name + '&password=' + self.user.password, {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "Authorization": "Bearer " + token  // Include the JWT token in the headers
-                    }
-                }).then(self.loginSuccess, self.loginFailure);
-            }).catch(self.loginFailure);
-        }
+
+                if (token) {
+                    // Store the token securely (e.g., using HttpOnly cookies)
+                    // You may want to consider using a library like Angular's $cookies
+                    // or an authentication library to handle token storage.
+                    // Example using $cookies:
+//                     $cookies.put('jwtToken', token);
+
+                    // Redirect or handle authentication success
+
+//                    $http.get('/api/v1/bankAccount', 'title='+self.user.userName,{
+//                         headers: {
+//                             "Content-Type": "application/json",
+//                             "Authorization": "Bearer " + token
+//                         }
+//                    }).then(function (response) {
+//                        console.log(response);
+//                    })
+//                    .catch(function (error) {
+//                        console.log('Error fetching user data:', error);
+//                    });
+
+//                    $http.get('/api/v1/bankAccount/roles',
+//                    {
+//                        userName : self.user.userName,
+//                        headers: {
+//                            "Content-Type": "application/json",
+//                            "Authorization": "Bearer " + token
+//                        }
+//                    }).then(function (response) {
+//                        console.log(response);
+//                    })
+//                    .catch(function (error) {
+//                        console.log('Error fetching user data:', error);
+//                    });
+
+                      $http.get('/api/v1/bankAccount', {
+                          params: { title: self.user.userName }, // Replace 'admin' with the desired username
+                          headers: {
+                              "Content-Type": "application/json",
+                              "Authorization": "Bearer " + token
+                          }
+                      }).then(function (response) {
+                        console.log(response);
+                        console.log(response.data.content[0].roles);
+
+                      })
+                      .catch(function (error) {
+                          console.log('Error fetching user data:', error);
+                      });
+
+//                    self.loginSuccess();
+                } else {
+                    // Handle authentication failure
+
+                    self.loginFailure();
+                }
+            }).catch(function(error) {
+                // Handle authentication error
+
+                self.loginFailure();
+            });
+        };
+
+//        // Accessing the JWT token in another controller
+//        var token = $cookies.get('jwtToken');
+//        if (token) {
+//            // You have the token, you can use it as needed
+//        } else {
+//            // Token not found, handle accordingly (e.g., redirect to login)
+//        }
 
         self.loginSuccess = function(response) {
 
@@ -54,7 +141,7 @@
             self.failmessage = "";
             SharedDataService.sharedData.failmessage = self.failmessage;
 
-            if(self.user.name === "admin" && self.user.password === "admin")
+            if(self.user.userName === "admin" && self.user.password === "admin")
             {
                 $location.path('/search');
             }

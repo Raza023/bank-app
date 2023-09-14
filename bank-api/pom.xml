@@ -96,6 +96,14 @@
 		<!--			<scope>provided</scope>-->
 				</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>jakarta.servlet</groupId>-->
+<!--			<artifactId>jakarta.servlet-api</artifactId>-->
+<!--			<version>4.0.4</version> &lt;!&ndash; Use the appropriate version &ndash;&gt;-->
+<!--			<scope>provided</scope>-->
+<!--		</dependency>-->
+
+
 		<!--		<dependency>-->
 		<!--			<groupId>jakarta.servlet</groupId>-->
 		<!--			<artifactId>jakarta.servlet-api</artifactId>-->

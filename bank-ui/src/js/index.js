@@ -1,8 +1,6 @@
 (function () {
 	'use strict';
 
-
-
 	function BankConfig($locationProvider, $routeProvider) {
 		$locationProvider.hashPrefix('!');
 		$routeProvider.when('/login', {

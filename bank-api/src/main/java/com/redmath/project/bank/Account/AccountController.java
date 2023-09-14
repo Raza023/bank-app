@@ -29,21 +29,32 @@ public class AccountController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    public AccountController(AccountService service)
+    {
+        this.accountService = service;
+    }
+
+
     @PostMapping("/authenticate")
-    public String generateToken(@RequestBody Account account) throws Exception {
+    public ResponseEntity<ApiResponse<String>> generateToken(@RequestBody Account account) throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(account.getUserName(), account.getPassword())
             );
         } catch (Exception ex) {
             throw new Exception("inavalid username/password");
+//            return ResponseEntity.notFound().build();
         }
-        return jwtUtil.generateToken(account.getUserName());
+        return ResponseEntity.ok(ApiResponse.of(jwtUtil.generateToken(account.getUserName())));
     }
 
-    public AccountController(AccountService service)
-    {
-        this.accountService = service;
+    @GetMapping("/roles")
+    public ResponseEntity<ApiResponse<Account>> getRolesByUserName(@RequestBody Account account) throws Exception {
+        Account account2 = accountService.findByName(account.getUserName());
+        if (account2 == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ApiResponse.of(account2));
     }
 
 

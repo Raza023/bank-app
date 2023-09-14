@@ -26,6 +26,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -40,10 +43,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private AccountService accountService;
 
+
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(accountService);
+//    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(accountService);
     }
+
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -51,8 +65,30 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.addAllowedOrigin("http://localhost:8080"); // Add your allowed origins here
+//        corsConfiguration.addAllowedHeader("*");
+//        corsConfiguration.addAllowedMethod("*");
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", corsConfiguration);
+//
+//        return new CorsFilter(source);
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+//        http.formLogin(config -> config.successHandler((request, response, auth) -> {
+//        }));
+//
+//        http.logout(config -> config.logoutSuccessHandler((request, response, auth) -> {
+//        }));
+
+
 
         String[] ignored = { "/error", "/ui/**", "/favicon.ico", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**" };
 
@@ -61,10 +97,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(ignored).permitAll()
                 .antMatchers("/api/v1/bankAccount/authenticate").permitAll() // Allow public access
 //                .antMatchers("/api/v1/bankBalance/**").permitAll() // Allow public access
+//                .antMatchers("/api/v1/bankAccount/**").permitAll() // Allow public access
+//                .antMatchers("/api/v1/bankTransaction/**").permitAll() // Allow public access
                 .antMatchers("/actuator/**").hasAuthority("ADMIN") // Secure actuator endpoints
                 .anyRequest().authenticated() // Secure all other endpoints
                 .and().exceptionHandling()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .formLogin()
+                .successHandler((request, response, auth) -> {
+                    // Custom success handler logic here
+                })
+                .and()
+                .logout()
+                .logoutSuccessHandler((request, response, auth) -> {
+                    // Custom logout success handler logic here
+                });
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

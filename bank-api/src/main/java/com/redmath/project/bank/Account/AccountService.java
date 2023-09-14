@@ -46,7 +46,10 @@ public class AccountService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+        logger.debug("Username is: "+username);
+
         Account user = findByUserName(username);
+
         if(user == null)
         {
             throw new UsernameNotFoundException("Invalid user: "+ username);
@@ -153,4 +156,26 @@ public class AccountService implements UserDetailsService {
         }
         return null;
     }
+
+//    @Transactional
+//    public boolean changePassword(String username, String oldPassword, String newPassword) {
+//        Account user = findByUserName(username);
+//
+//        if (user == null) {
+//            throw new UsernameNotFoundException("User not found: " + username);
+//        }
+//
+//        // Check if the old password matches the password stored in the database
+//        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+//            // Hash the new password using BCryptPasswordEncoder
+//            String hashedPassword = passwordEncoder.encode(newPassword);
+//            user.setPassword(hashedPassword);
+//
+//            // Save the updated user to the database
+//            accountRepository.save(user);
+//            return true; // Password changed successfully
+//        } else {
+//            return false; // Old password is incorrect
+//        }
+//    }
 }
