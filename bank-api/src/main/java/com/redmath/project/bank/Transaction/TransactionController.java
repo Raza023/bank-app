@@ -35,10 +35,10 @@ public class TransactionController {
         return ResponseEntity.ok(trans);
     }
 
-    @GetMapping("/transactions/{id}")
-    public ResponseEntity<ApiResponse<List<Transaction>>> getBalanceDetails(@PathVariable("id") Long id)
+    @GetMapping("/transactions/{userId}")
+    public ResponseEntity<ApiResponse<List<Transaction>>> getBalanceDetails(@PathVariable("userId") Long userId)
     {
-        List<Transaction> transaction = transactionService.findByUserId(id);
+        List<Transaction> transaction = transactionService.findByUserId(userId);
         if(transaction != null)
         {
             return ResponseEntity.ok(ApiResponse.of(transaction));

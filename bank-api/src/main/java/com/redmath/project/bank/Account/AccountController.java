@@ -43,7 +43,6 @@ public class AccountController {
             );
         } catch (Exception ex) {
             throw new Exception("inavalid username/password");
-//            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(ApiResponse.of(jwtUtil.generateToken(account.getUserName())));
     }

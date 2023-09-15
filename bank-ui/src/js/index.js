@@ -13,111 +13,63 @@
 			templateUrl: 'bank/bank.html',
 			controller: 'BankController as $ctrl',
 			resolve: {
-				checkAdmin: ['$q', 'AuthService', '$location', function ($q, AuthService, $location) {
-					var loginPromise = AuthService.isLoggedIn();
-					var adminPromise = AuthService.isAdmin();
+				checkAdmin: ['$q', '$location', function ($q, $location) {
 
-					return $q.all([loginPromise, adminPromise]).then(function (results) {
-						var loginVar = results[0];
-						var adminVar = results[1];
-
-						if (loginVar) {
-							if (adminVar) {
-								// Both conditions are met, resolve the route
-								console.log("you are admin.");
-								return true;
-							}
-							else {
-								console.log("You are not an admin.");
-								$location.path('/account'); // Redirect to the login page
-								return $q.reject("Access denied");
-							}
-						} else {
-							// Either condition is not met, reject the route
-							console.log("login require.");
-							$location.path('/login'); // Redirect to the login page
-							return $q.reject("Access denied");
-						}
-					}).catch(function (error) {
-						// Handle errors if necessary
-						console.log("There was an error.");
-						$location.path('/login'); // Redirect to an error page
-						return $q.reject(error);
-					});
+					const myToken = sessionStorage.getItem('jwtToken');
+					const myRole = sessionStorage.getItem('role');
+		
+					if (myRole === 'ADMIN' && myToken) {
+						// Both conditions are met, resolve the route
+						console.log("You are an admin.");
+						return true;
+					} else {
+						// Either condition is not met, reject the route
+						console.log("Access denied.");
+						$location.path('/login'); // Redirect to the login page
+						return $q.reject("Access denied");
+					}
 				}]
 			}
 		}).when('/bank/:id', {
 			templateUrl: 'bank/bank.html',
 			controller: 'BankController as $ctrl',
 			resolve: {
-				checkAdmin: ['$q', 'AuthService', '$location', function ($q, AuthService, $location) {
-					var loginPromise = AuthService.isLoggedIn();
-					var adminPromise = AuthService.isAdmin();
+				checkAdmin: ['$q', '$location', function ($q, $location) {
 
-					return $q.all([loginPromise, adminPromise]).then(function (results) {
-						var loginVar = results[0];
-						var adminVar = results[1];
-
-						if (loginVar) {
-							if (adminVar) {
-								// Both conditions are met, resolve the route
-								console.log("you are admin.");
-								return true;
-							}
-							else {
-								console.log("You are not an admin.");
-								$location.path('/account'); // Redirect to the login page
-								return $q.reject("Access denied");
-							}
-						} else {
-							// Either condition is not met, reject the route
-							console.log("login require.");
-							$location.path('/login'); // Redirect to the login page
-							return $q.reject("Access denied");
-						}
-					}).catch(function (error) {
-						// Handle errors if necessary
-						console.log("There was an error.");
-						$location.path('/login'); // Redirect to an error page
-						return $q.reject(error);
-					});
+					const myToken = sessionStorage.getItem('jwtToken');
+					const myRole = sessionStorage.getItem('role');
+		
+					if (myRole === 'ADMIN' && myToken) {
+						// Both conditions are met, resolve the route
+						console.log("You are an admin.");
+						return true;
+					} else {
+						// Either condition is not met, reject the route
+						console.log("Access denied.");
+						$location.path('/login'); // Redirect to the login page
+						return $q.reject("Access denied");
+					}
 				}]
 			}
 		}).when('/search', {
 			templateUrl: 'bank/search.html',
 			controller: 'BankController as $ctrl',
 			resolve: {
-				checkAdmin: ['$q', 'AuthService', '$location', function ($q, AuthService, $location) {
-					var loginPromise = AuthService.isLoggedIn();
-					var adminPromise = AuthService.isAdmin();
+				checkAdmin: ['$q', '$location', function ($q, $location) {
 
-					return $q.all([loginPromise, adminPromise]).then(function (results) {
-						var loginVar = results[0];
-						var adminVar = results[1];
-
-						if (loginVar) {
-							if (adminVar) {
-								// Both conditions are met, resolve the route
-								console.log("you are admin.");
-								return true;
-							}
-							else {
-								console.log("You are not an admin.");
-								$location.path('/account'); // Redirect to the login page
-								return $q.reject("Access denied");
-							}
-						} else {
-							// Either condition is not met, reject the route
-							console.log("login require.");
-							$location.path('/login'); // Redirect to the login page
-							return $q.reject("Access denied");
-						}
-					}).catch(function (error) {
-						// Handle errors if necessary
-						console.log("There was an error.");
-						$location.path('/login'); // Redirect to an error page
-						return $q.reject(error);
-					});
+					const myToken = sessionStorage.getItem('jwtToken');
+					const myRole = sessionStorage.getItem('role');
+		
+					if (myRole === 'ADMIN' && myToken) {
+						// Both conditions are met, resolve the route
+						console.log("You are an admin.");
+						return true;
+					} else {
+						// Either condition is not met, reject the route
+						console.log("Access denied.");
+						$location.path('/login'); // Redirect to the login page
+						return $q.reject("Access denied");
+					}
 				}]
 			}
 
@@ -203,89 +155,63 @@
 				templateUrl: 'account/account.html',
 				controller: 'BankController as $ctrl',
 				resolve: {
-					checkAdmin: ['$q', 'AuthService', '$location', function ($q, AuthService, $location) {
-						var loginPromise = AuthService.isLoggedIn();
-						//                var adminPromise = AuthService.isAdmin();
-
-						return $q.all([loginPromise]).then(function (results) {
-							var loginVar = results[0];
-							//                  var adminVar = results[1];
-
-							if (loginVar) {
-								//User is logged in.
-								return true;
-							} else {
-								// condition is not met, reject the route
-								console.log("login require.");
-								$location.path('/login'); // Redirect to the login page
-								return $q.reject("Access denied");
-							}
-						}).catch(function (error) {
-							// Handle errors if necessary
-							console.log("There was an error.");
-							$location.path('/login'); // Redirect to an error page
-							return $q.reject(error);
-						});
+					checkAdmin: ['$q', '$location', function ($q, $location) {
+	
+						const myToken = sessionStorage.getItem('jwtToken');
+						const myRole = sessionStorage.getItem('role');
+			
+						if (myToken) {
+							// Both conditions are met, resolve the route
+							console.log("You are a user.");
+							return true;
+						} else {
+							// Either condition is not met, reject the route
+							console.log("Access denied.");
+							$location.path('/login'); // Redirect to the login page
+							return $q.reject("Access denied");
+						}
 					}]
 				}
 			}).when('/showTransactions/:id', {
 				templateUrl: 'account/showTransactions.html',
 				controller: 'BankController as $ctrl',
 				resolve: {
-					checkAdmin: ['$q', 'AuthService', '$location', function ($q, AuthService, $location) {
-						var loginPromise = AuthService.isLoggedIn();
-						//              var adminPromise = AuthService.isAdmin();
-
-						return $q.all([loginPromise]).then(function (results) {
-							var loginVar = results[0];
-							//                var adminVar = results[1];
-
-							if (loginVar) {
-								//User is logged in.
-								return true;
-							} else {
-								// condition is not met, reject the route
-								console.log("login require.");
-								$location.path('/login'); // Redirect to the login page
-								return $q.reject("Access denied");
-							}
-						}).catch(function (error) {
-							// Handle errors if necessary
-							console.log("There was an error.");
-							$location.path('/login'); // Redirect to an error page
-							return $q.reject(error);
-						});
+					checkAdmin: ['$q', '$location', function ($q, $location) {
+	
+						const myToken = sessionStorage.getItem('jwtToken');
+						const myRole = sessionStorage.getItem('role');
+			
+						if (myToken) {
+							// Both conditions are met, resolve the route
+							console.log("You are a user.");
+							return true;
+						} else {
+							// Either condition is not met, reject the route
+							console.log("Access denied.");
+							$location.path('/login'); // Redirect to the login page
+							return $q.reject("Access denied");
+						}
 					}]
 				}
 			}).when('/transaction', {
 				templateUrl: 'account/transaction.html',
 				controller: 'TransactionController as $ctrl',
 				resolve: {
-					checkAdmin: ['$q', 'AuthService', '$location', function ($q, AuthService, $location) {
-						var loginPromise = AuthService.isLoggedIn();
-						//                var adminPromise = AuthService.isAdmin();
-
-						return $q.all([loginPromise]).then(function (results) {
-							var loginVar = results[0];
-							//                  var adminVar = results[1];
-
-							//                    console.log(loginVar);
-
-							if (loginVar) {
-								//User is logged in.
-								return true;
-							} else {
-								// condition is not met, reject the route
-								console.log("login require.");
-								$location.path('/login'); // Redirect to the login page
-								return $q.reject("Access denied");
-							}
-						}).catch(function (error) {
-							// Handle errors if necessary
-							console.log("There was an error.");
-							$location.path('/login'); // Redirect to an error page
-							return $q.reject(error);
-						});
+					checkAdmin: ['$q', '$location', function ($q, $location) {
+	
+						const myToken = sessionStorage.getItem('jwtToken');
+						const myRole = sessionStorage.getItem('role');
+			
+						if (myToken) {
+							// Both conditions are met, resolve the route
+							console.log("You are a user.");
+							return true;
+						} else {
+							// Either condition is not met, reject the route
+							console.log("Access denied.");
+							$location.path('/login'); // Redirect to the login page
+							return $q.reject("Access denied");
+						}
 					}]
 				}
 			}).otherwise('/search');

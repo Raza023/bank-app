@@ -22,13 +22,12 @@
     angular.module('bank-fe').factory('BankService', ['$resource', BankService]);
 
     function BankService2($resource) {
-        return $resource('/api/v1/bankTransaction/transactions/:userId', {}, {
+        return $resource('/api/v1/bankTransaction/transactions/:userId', {userId: '@userId'}, {
             update: {
                 method: 'PUT'
             },
             get: {
-                method: 'GET',
-                params: { userId: '@userId' }
+                method: 'GET'
             },
             save: {
                 method: 'POST'
@@ -169,33 +168,61 @@
             }
 
 
+            // Retrieving data from Session Storage
+            const myToken = sessionStorage.getItem('jwtToken');
+            const myId = sessionStorage.getItem('id');
+            const myUserName = sessionStorage.getItem('userName');
+            const myEmail = sessionStorage.getItem('email');
+            const myRole = sessionStorage.getItem('role');
+            const myAddress = sessionStorage.getItem('address');
 
-            $http.get('/api/v1/bankAccount/auth')
+            $http.get('/api/v1/bankBalance/balance/' + myId, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + myToken
+                }
+            })
                 .then(function (response) {
                     // Assuming the user data is available in the response.data
-                    self.loggedInUser = response.data.content;
-                    SharedDataService.sharedData.loggedInUser = self.loggedInUser; // Update the shared data
-                    if (response.data.content !== null) {
-                        self.balanceId = response.data.content.id;
-                    }
-                    SharedDataService.sharedData.balanceId = self.balanceId; // Update the shared data
-                    //                console.log(response.data.content);
-                    //                console.log(response.data.content.id);
-                    //                console.log(self.balanceId);
-                    $http.get('/api/v1/bankBalance/balance/' + self.balanceId)
-                        .then(function (response) {
-                            // Assuming the user data is available in the response.data
-                            self.balance = response.data.content;
-                            SharedDataService.sharedData.balance = self.balance; // Update the shared data
-                            //                    console.log(response.data.content);
-                        })
-                        .catch(function (error) {
-                            console.log('Error fetching user data:', error);
-                        });
+                    self.balance = response.data.content;
+                    SharedDataService.sharedData.balance = self.balance; // Update the shared data
+                    //                    console.log(response.data.content);
+
+                    self.loggedInUser.id = myId;
+                    self.loggedInUser.userName = myUserName;
+                    self.loggedInUser.email = myEmail;
+                    self.loggedInUser.roles = myRole;
+                    self.loggedInUser.address = myAddress;
+
+
                 })
                 .catch(function (error) {
                     console.log('Error fetching user data:', error);
                 });
+
+
+            // $http.get('/api/v1/bankAccount/auth',{
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         "Authorization": "Bearer " + myToken
+            //     }
+            // })
+            //     .then(function (response) {
+            //         // Assuming the user data is available in the response.data
+            //         self.loggedInUser = response.data.content;
+            //         SharedDataService.sharedData.loggedInUser = self.loggedInUser; // Update the shared data
+            //         if (response.data.content !== null) {
+            //             self.balanceId = response.data.content.id;
+            //         }
+            //         SharedDataService.sharedData.balanceId = self.balanceId; // Update the shared data
+            //         //                console.log(response.data.content);
+            //         //                console.log(response.data.content.id);
+            //         //                console.log(self.balanceId);
+
+            //     })
+            //     .catch(function (error) {
+            //         console.log('Error fetching user data:', error);
+            //     });
 
             //            console.log(SharedDataService.sharedData.balanceId);
             //            console.log(self.balanceId);
@@ -210,10 +237,29 @@
             else {
                 parameters.title = '%';
             }
+            const myToken = sessionStorage.getItem('jwtToken');
 
-            self.service.get(parameters).$promise.then(function (response) {
+            console.log(myToken);
+
+            $http({
+                method: 'GET',
+                url: '/api/v1/bankAccount',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + myToken
+                },
+                data: {},
+                params: {
+                    title: parameters.title
+                }
+            }).then(function (response) {
+
+                console.log(response.data.content);
                 self.display = true;
-                self.bank = response.content;
+                self.bank = response.data.content;
+            }).catch(function (error) {
+                // Handle error here
+                console.error("Error:", error);
             });
         }
 
@@ -234,7 +280,14 @@
 
             var isExist = false;
 
-            self.service3.get().$promise.then(function (response) {
+            const myToken = sessionStorage.getItem('jwtToken');
+
+            self.service3.get({
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + myToken
+                }
+            }).$promise.then(function (response) {
                 console.log(response.content);
 
                 let myData = response.content;
@@ -242,7 +295,7 @@
                 isExist = false;
 
                 for (let i = 0; i < myData.length; i++) {
-                    if (myData[i].name === self.bankItem.name || myData[i].email === self.bankItem.email) {
+                    if (myData[i].userName === self.bankItem.userName || myData[i].email === self.bankItem.email) {
                         isExist = true;
                         break;
                     }
@@ -251,7 +304,12 @@
                 //                console.log(self.bankItem.id+"check");
 
                 if (self.bankItem.id) {
-                    self.service.save(self.bankItem).$promise.then(function (response) {
+                    self.service.save(self.bankItem, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + myToken
+                        }
+                    }).$promise.then(function (response) {
                         self.bankItem.id = response.content.id;
 
                         console.log("account update");
@@ -271,7 +329,12 @@
                         document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Username or email already exist.</strong></div>';
                     }
                     else {
-                        self.service.save(self.bankItem).$promise.then(function (response) {
+                        self.service.save(self.bankItem, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + myToken
+                            }
+                        }).$promise.then(function (response) {
                             self.bankItem.id = response.content.id;
 
                             self.balance = {};
@@ -281,7 +344,12 @@
 
                             console.log("created user ID: " + self.balance.userId);
 
-                            self.service4.save(self.balance).$promise.then(function (response) {
+                            self.service4.save(self.balance, {
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": "Bearer " + myToken
+                                }
+                            }).$promise.then(function (response) {
                                 self.balance.id = response.content.id;
                                 self.balance.lastTransaction = response.content.lastTransaction;
                                 self.balance.date = response.content.date;
@@ -314,7 +382,7 @@
         self.showToUpdate = function (item) {
 
             self.bankItem.id = item.id;
-            self.bankItem.name = item.name;
+            self.bankItem.userName = item.userName;
             self.bankItem.password = item.password;
             self.bankItem.roles = item.roles;
             self.bankItem.email = item.email;
@@ -332,13 +400,22 @@
         self.showTransactions = function (item) {
             console.log(item.userId);
 
-            self.service2.get({ userId: item.userId }).$promise
-                .then(function (response) {
+            const myToken = sessionStorage.getItem('jwtToken');
 
+            $http({
+                method: 'GET',
+                url: '/api/v1/bankTransaction/transactions/'+item.userId,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + myToken
+                },
+                data: {},
+                params: {}
+            }).then(function (response) {
                     self.displayTrans = true;
                     SharedDataService.sharedData.displayTrans = self.displayTrans;
 
-                    self.transactions = response.content;
+                    self.transactions = response.data.content;
                     SharedDataService.sharedData.transactions = self.transactions;
 
                     console.log(self.displayTrans);
@@ -352,19 +429,42 @@
         }
 
         self.delete = function (item) {
+
+            const myToken = sessionStorage.getItem('jwtToken');
+
             self.display = false;
             self.bankItem = item;
             if (self.bankItem.id) {
 
                 var deletedUserId = self.bankItem.id;
 
-                self.service.delete({ id: self.bankItem.id }).$promise.then(function (deleteResponse) {
+                $http({
+                    method: 'DELETE',
+                    url: '/api/v1/bankAccount/'+self.bankItem.id,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + myToken
+                    },
+                    data: {},
+                    params: {}
+                }).then(function (deleteResponse) {
                     self.display = true;
-                    self.bank = deleteResponse.content;
+                    self.bank = deleteResponse.data.content;
 
-                    self.service5.delete({ userId: self.bankItem.id }).$promise.then(function (accDeleteResponse) {
+                    console.log("Account deleted.");
+
+                    $http({
+                        method: 'DELETE',
+                        url: '/api/v1/bankBalance/balance/'+self.bankItem.id,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + myToken
+                        },
+                        data: {},
+                        params: {}
+                    }).then(function (accDeleteResponse) {
                         console.log(accDeleteResponse);
-                        console.log("Account also deleted.");
+                        console.log("Balance also deleted.");
                     }).catch(function (response) {
                         if (response.status === 403) {
                             self.delete(item);

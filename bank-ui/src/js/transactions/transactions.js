@@ -88,51 +88,72 @@
         self.init = function () {
             self.populateEmails();
             // Get the current date
-            var currentDate = new Date();
+            // var currentDate = new Date();
 
-            // Get the day, month, and year
-            var day = currentDate.getDate();
-            var month = currentDate.getMonth() + 1; // January is 0
-            var year = currentDate.getFullYear();
+            // // Get the day, month, and year
+            // var day = currentDate.getDate();
+            // var month = currentDate.getMonth() + 1; // January is 0
+            // var year = currentDate.getFullYear();
 
-            // Create a string in the format YYYY-MM-DD
-            var dateString = year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
+            // // Create a string in the format YYYY-MM-DD
+            // var dateString = year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
 
-            // Create a Date object from the string
-            var dateObject = new Date(dateString);
+            // // Create a Date object from the string
+            // var dateObject = new Date(dateString);
 
-            //            console.log(dateObject);
-            // Set the current date to your model
-            self.transactionItem.date = dateObject;
+            // //            console.log(dateObject);
+            // // Set the current date to your model
+            // self.transactionItem.date = dateObject;
+
+            // console.log(self.transactionItem.date);
+
+            self.transactionItem.date = new Date();//.toISOString();//.slice(0, 10); // Format as yyyy-MM-dd
+            console.log(self.transactionItem.date);
             //            self.search();
         }
 
         self.populateEmails = function () {
+
+            const myToken = sessionStorage.getItem('jwtToken');
+
             self.display = false;
-            self.service2.get().$promise.then(function (response) {
+
+            $http({
+                method: 'GET',
+                url: '/api/v1/bankAccount',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + myToken
+                },
+                data: {},
+                params: {}
+            }).then(function (response) {
                 self.display = true;
-                self.emails = response.content;
+                self.emails = response.data.content;
                 //                console.log(self.emails);
-                let filteredEmails = self.emails.filter(email => email.email !== self.loggedInUser.email);
+                let filteredEmails = self.emails.filter(email => email.email !== sessionStorage.getItem('email'));
                 self.emails = filteredEmails;   //loggedInUser email excluded.
                 console.log(self.emails);
                 //                console.log(filteredEmails);
             });
-
-            self.transactionItem.date = new Date().toISOString().slice(0, 10); // Format as yyyy-MM-dd
         }
 
         self.save = function () {
-            console.log(self.transactionItem);
-            console.log(self.loggedInUser.id);
-            self.transactionItem.userId = self.loggedInUser.id;
+            self.transactionItem.userId = sessionStorage.getItem('id');
+
+            const myToken = sessionStorage.getItem('jwtToken');
 
             if (self.transactionItem.id) {
                 document.getElementById("showMesssage").innerHTML = '<div class="alert alert-danger"><strong>Transaction has already been done. Refresh this page and commit another transaction.</strong></div>';
                 //nothing to do here. :)  just chill out
             }
             else {
-                $http.get('/api/v1/bankBalance/balance/' + self.loggedInUser.id)
+                $http.get('/api/v1/bankBalance/balance/' + sessionStorage.getItem('id'), {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + myToken
+                    }
+                })
                     .then(function (response) {
                         // Assuming the user data is available in the response.data
                         self.balance = response.data.content;
@@ -142,8 +163,18 @@
                         SharedDataService.sharedData.balanceId = self.balanceId; // Update the shared data
                         console.log(response.data.content);
                         if (self.balance.amount >= self.transactionItem.amount) {
-                            self.service.save(self.transactionItem).$promise.then(function (response) {
-                                self.transactionItem.id = response.content.id;
+
+                            $http({
+                                method: 'POST',
+                                url: '/api/v1/bankTransaction',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer ' + myToken
+                                },
+                                data: self.transactionItem,
+                                params: {}
+                            }).then(function (response) {
+                                self.transactionItem.id = response.data.content.id;
                                 console.log("Sender transaction done.");
 
                                 console.log(self.transactionItem);
@@ -152,16 +183,31 @@
                                 self.balance.amount = self.balance.amount - self.transactionItem.amount;
                                 self.balance.lastTransaction = self.transactionItem.transactionType;
                                 self.balance.date = self.transactionItem.date;
-                                self.balance.userId = self.loggedInUser.id;
+                                self.balance.userId = sessionStorage.getItem('id');
                                 SharedDataService.sharedData.balance = self.balance;
                                 console.log(self.balance);
 
-                                self.service3.save(self.balance).$promise.then(function (response) {
-                                    //                            self.balance.id = response.content.id;
-                                    console.log(self.balance);
+                                $http({
+                                    method: 'POST',
+                                    url: '/api/v1/bankBalance/'+self.balance.id,
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': 'Bearer ' + myToken
+                                    },
+                                    data: self.balance,
+                                    params: {
+                                    }
+                                }).then(function (response) {
+                                    // self.balance.id = response.data.content.id;
+                                    console.log(response.data);
                                     console.log("Sender balance done.");
 
-                                    $http.get('/api/v1/bankAccount/email/' + self.selectedEmail)
+                                    $http.get('/api/v1/bankAccount/email/' + self.selectedEmail,{
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                            "Authorization": "Bearer " + myToken
+                                        }
+                                    })
                                         .then(function (response) {
                                             self.receiverId = response.data.content.id;
 
@@ -173,13 +219,30 @@
                                             self.receiverTransactionItem.date = self.transactionItem.date;
                                             self.receiverTransactionItem.userId = self.receiverId;
 
-                                            self.service.save(self.receiverTransactionItem).$promise.then(function (response) {
-                                                self.receiverTransactionItem.id = response.content.id;
+
+                                            console.log(self.receiverTransactionItem);
+
+                                            $http({
+                                                method: 'POST',
+                                                url: '/api/v1/bankTransaction',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Authorization': 'Bearer ' + myToken
+                                                },
+                                                data: self.receiverTransactionItem,
+                                                params: {}
+                                            }).then(function (response) {
+                                                self.receiverTransactionItem.id = response.data.content.id;
                                                 console.log(self.receiverTransactionItem);
                                                 console.log("Receiver transaction done.");
 
-                                                $http.get('/api/v1/bankBalance/balance/' + self.receiverId)
-                                                    .then(function (response) {
+
+                                                $http.get('/api/v1/bankBalance/balance/' + self.receiverId, {
+                                                    headers: {
+                                                        "Content-Type": "application/json",
+                                                        "Authorization": "Bearer " + myToken
+                                                    }
+                                                }).then(function (response) {
                                                         // Assuming the user data is available in the response.data
                                                         self.balance = response.data.content;
                                                         SharedDataService.sharedData.balance = self.balance; // Update the shared data
@@ -192,7 +255,17 @@
                                                         SharedDataService.sharedData.balance = self.balance;
                                                         //                                                console.log(self.balance);
 
-                                                        self.service3.save(self.balance).$promise.then(function (response) {
+                                                        $http({
+                                                            method: 'POST',
+                                                            url: '/api/v1/bankBalance/'+self.balance.id,
+                                                            headers: {
+                                                                'Content-Type': 'application/json',
+                                                                'Authorization': 'Bearer ' + myToken
+                                                            },
+                                                            data: self.balance,
+                                                            params: {
+                                                            }
+                                                        }).then(function (response) {
                                                             //                        self.balance.id = response.content.id;
                                                             console.log(self.balance);
                                                             console.log("Receiver balance done.");
